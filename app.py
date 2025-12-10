@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
+from io import BytesIO
 
 # ---------------- CONFIG -----------------
 
@@ -67,9 +68,31 @@ def load_parquet_folder(folder: Path) -> pd.DataFrame:
 
 
 @st.cache_data(show_spinner=True)
-def get_data() -> pd.DataFrame:
-    df = load_parquet_folder(DATA_DIR)
+def load_sample_raw() -> pd.DataFrame:
+    """Load the bundled sample dataset from the repo folder."""
+    return load_parquet_folder(DATA_DIR)
 
+
+@st.cache_data(show_spinner=True)
+def load_uploaded_raw(file_bytes: bytes, file_name: str) -> pd.DataFrame:
+    """
+    Load an uploaded CSV or Parquet file.
+    We cache on the raw bytes + name so repeated runs are fast.
+    """
+    buffer = BytesIO(file_bytes)
+    name_lower = file_name.lower()
+
+    if name_lower.endswith(".parquet"):
+        df = pd.read_parquet(buffer)
+    elif name_lower.endswith(".csv"):
+        df = pd.read_csv(buffer)
+    else:
+        raise ValueError("Unsupported file type. Please upload .csv or .parquet.")
+    return df
+
+
+def preprocess_reviews(df: pd.DataFrame) -> pd.DataFrame:
+    """Standard cleaning so visuals work for both sample + uploaded datasets."""
     # Standardise column names
     df.columns = [c.strip() for c in df.columns]
 
@@ -83,6 +106,9 @@ def get_data() -> pd.DataFrame:
         df["review_date"] = pd.to_datetime(df["unixTime"], unit="s", errors="coerce")
     elif "unixtime" in df.columns:
         df["review_date"] = pd.to_datetime(df["unixtime"], unit="s", errors="coerce")
+    elif "review_date" in df.columns:
+        # try to parse if already present as string
+        df["review_date"] = pd.to_datetime(df["review_date"], errors="coerce")
     else:
         df["review_date"] = pd.NaT
 
@@ -98,7 +124,7 @@ def get_data() -> pd.DataFrame:
 # ---------------- SIDEBAR FILTERS -----------------
 
 
-def sidebar_filters(df_full: pd.DataFrame) -> pd.DataFrame:
+def sidebar_filters(df_full: pd.DataFrame) -> tuple[pd.DataFrame, bool]:
     st.sidebar.header("Global filters")
 
     # --- Sample size slider (performance control) ---
@@ -110,7 +136,7 @@ def sidebar_filters(df_full: pd.DataFrame) -> pd.DataFrame:
         min_value=0,
         max_value=max_rows,
         value=default_sample,
-        step=max(1, max_rows // 20),
+        step=max(1, max_rows // 20) if max_rows > 0 else 1,
     )
 
     if sample_n and 0 < sample_n < max_rows:
@@ -211,7 +237,7 @@ def sidebar_filters(df_full: pd.DataFrame) -> pd.DataFrame:
             "Helpful ratio range",
             min_value=0.0,
             max_value=1.0,
-            value=(0.0, min(1.0, max_hr)),
+            value=(0.0, min(1.0, max_hr if max_hr > 0 else 1.0)),
             step=0.05,
         )
         df = df[df["helpful_ratio"].fillna(0).between(hr_range[0], hr_range[1])]
@@ -248,6 +274,10 @@ def plot_reviews_over_time(df: pd.DataFrame, time_granularity: str = "Year"):
         .reset_index()
         .sort_values("time_bucket")
     )
+
+    if grouped.empty:
+        st.info("No data available for the selected time range.")
+        return
 
     fig, ax1 = plt.subplots()
     ax1.bar(
@@ -308,6 +338,10 @@ def plot_rating_distribution(df: pd.DataFrame):
     rating_counts.columns = ["rating", "count"]
     total = rating_counts["count"].sum()
     rating_counts["share"] = rating_counts["count"] / total * 100
+
+    if rating_counts.empty:
+        st.info("No ratings available for the current filter selection.")
+        return
 
     fig, ax = plt.subplots()
     ax.bar(
@@ -387,17 +421,18 @@ def plot_top_entities(df: pd.DataFrame):
         )
         product_counts.columns = ["productId", "review_count"]
 
-        with cols[0]:
-            fig, ax = plt.subplots()
-            ax.barh(
-                product_counts["productId"],
-                product_counts["review_count"],
-                color=COLORS_MIXED[2],
-            )
-            ax.invert_yaxis()
-            ax.set_xlabel("Number of reviews")
-            ax.set_title("Top 10 Most Reviewed Products")
-            st.pyplot(fig)
+        if not product_counts.empty:
+            with cols[0]:
+                fig, ax = plt.subplots()
+                ax.barh(
+                    product_counts["productId"],
+                    product_counts["review_count"],
+                    color=COLORS_MIXED[2],
+                )
+                ax.invert_yaxis()
+                ax.set_xlabel("Number of reviews")
+                ax.set_title("Top 10 Most Reviewed Products")
+                st.pyplot(fig)
 
     # Top reviewers by volume
     if "userId" in df.columns:
@@ -409,17 +444,18 @@ def plot_top_entities(df: pd.DataFrame):
         )
         user_counts.columns = ["userId", "review_count"]
 
-        with cols[1]:
-            fig, ax = plt.subplots()
-            ax.barh(
-                user_counts["userId"],
-                user_counts["review_count"],
-                color=COLORS_MIXED[3],
-            )
-            ax.invert_yaxis()
-            ax.set_xlabel("Number of reviews")
-            ax.set_title("Top 10 Most Active Reviewers")
-            st.pyplot(fig)
+        if not user_counts.empty:
+            with cols[1]:
+                fig, ax = plt.subplots()
+                ax.barh(
+                    user_counts["userId"],
+                    user_counts["review_count"],
+                    color=COLORS_MIXED[3],
+                )
+                ax.invert_yaxis()
+                ax.set_xlabel("Number of reviews")
+                ax.set_title("Top 10 Most Active Reviewers")
+                st.pyplot(fig)
 
     st.markdown(
         """
@@ -485,7 +521,24 @@ and engagement levels.
 """
     )
 
-    df_full = get_data()
+    # --------- DATA SOURCE CHOICE: sample vs upload ----------
+    st.sidebar.markdown("### Data source")
+    uploaded = st.sidebar.file_uploader(
+        "Upload full dataset (.parquet or .csv)",
+        type=["parquet", "csv"],
+        help="If no file is uploaded, the app will use the bundled sample_reviews.parquet.",
+    )
+
+    if uploaded is not None:
+        st.sidebar.success("Using uploaded file.")
+        raw_df = load_uploaded_raw(uploaded.getvalue(), uploaded.name)
+    else:
+        st.sidebar.info("No file uploaded – using bundled sample dataset.")
+        raw_df = load_sample_raw()
+
+    df_full = preprocess_reviews(raw_df)
+
+    # ---------------- APPLY FILTERS ----------------
     df, advanced = sidebar_filters(df_full)
 
     # --- High-level KPIs ---
@@ -567,11 +620,11 @@ These KPIs respect all filters currently selected in the sidebar:
         st.markdown("---")
 
     # --- Optional raw data preview ---
-    with st.expander("Peek at the underlying data (sample)", expanded=False):
+    with st.expander("Peek at the underlying data (sample of current view)", expanded=False):
         st.dataframe(df.head(200))
 
     st.caption(
-        "Data source: Amazon Movies & TV reviews (sample). "
+        "Data source: Amazon Movies & TV reviews (sample or uploaded). "
         "Dashboard prepared for ALY6110 deployment on Streamlit Cloud."
     )
 
