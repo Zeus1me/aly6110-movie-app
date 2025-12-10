@@ -37,7 +37,7 @@ st.markdown("""
     
     /* Gradient header */
     .main-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
         padding: 2rem;
         border-radius: 15px;
         margin-bottom: 2rem;
@@ -61,7 +61,7 @@ st.markdown("""
     
     /* Metric cards */
     .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         padding: 1.5rem;
         border-radius: 15px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.2);
@@ -71,25 +71,25 @@ st.markdown("""
     
     .metric-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+        box-shadow: 0 12px 48px rgba(42, 82, 152, 0.4);
     }
     
     /* Section headers */
     .section-header {
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 2rem;
         font-weight: 700;
         margin: 2rem 0 1rem 0;
         padding-left: 1rem;
-        border-left: 5px solid #667eea;
+        border-left: 5px solid #2a5298;
     }
     
     /* Info boxes */
     .info-box {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-        border-left: 4px solid #667eea;
+        background: linear-gradient(135deg, rgba(30, 60, 114, 0.1) 0%, rgba(42, 82, 152, 0.1) 100%);
+        border-left: 4px solid #2a5298;
         padding: 1rem;
         border-radius: 8px;
         margin: 1rem 0;
@@ -120,7 +120,7 @@ st.markdown("""
     
     /* Button styling */
     .stButton>button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         color: white;
         border: none;
         border-radius: 10px;
@@ -131,7 +131,7 @@ st.markdown("""
     
     .stButton>button:hover {
         transform: scale(1.05);
-        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 8px 24px rgba(42, 82, 152, 0.4);
     }
     
     /* Tabs styling */
@@ -147,7 +147,7 @@ st.markdown("""
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     }
     
     /* Expander styling */
@@ -163,10 +163,10 @@ st.markdown("""
 PROJECT_ROOT = Path(__file__).parent
 DATA_DIR = PROJECT_ROOT  # sample_reviews.parquet lives here
 
-# Modern color palettes
-COLORS_VIBRANT = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe', '#43e97b']
-COLORS_SUNSET = ['#ff6b6b', '#ee5a6f', '#f06595', '#cc5de8', '#845ef7', '#5c7cfa']
-COLORS_OCEAN = ['#0077b6', '#0096c7', '#00b4d8', '#48cae4', '#90e0ef', '#ade8f4']
+# Modern color palettes - Professional Cold Scheme
+COLORS_VIBRANT = ['#1e3c72', '#2a5298', '#3b7dd6', '#4a9eff', '#74bdff', '#a1d3ff']
+COLORS_SUNSET = ['#0d47a1', '#1565c0', '#1976d2', '#1e88e5', '#2196f3', '#42a5f5']
+COLORS_OCEAN = ['#006064', '#00838f', '#0097a7', '#00acc1', '#00bcd4', '#26c6da']
 
 # ---------------- DATA LOADING -----------------
 
@@ -242,7 +242,7 @@ def preprocess_reviews(df: pd.DataFrame) -> pd.DataFrame:
 
 def sidebar_filters(df_full: pd.DataFrame):
     st.sidebar.markdown("""
-    <div style='text-align: center; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin-bottom: 2rem;'>
+    <div style='text-align: center; padding: 1rem; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border-radius: 10px; margin-bottom: 2rem;'>
         <h2 style='color: white; margin: 0;'>🎛️ Controls</h2>
     </div>
     """, unsafe_allow_html=True)
@@ -380,37 +380,53 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
     df_time = df.dropna(subset=["review_date"]).copy()
 
     if time_granularity == "Year":
-        df_time["time_bucket"] = df_time["review_date"].dt.year.astype(str)
+        df_time["time_bucket"] = df_time["review_date"].dt.year.astype(int)
+        df_time["time_bucket_str"] = df_time["time_bucket"].astype(str)
     elif time_granularity == "Quarter":
-        df_time["time_bucket"] = df_time["review_date"].dt.to_period("Q").astype(str)
+        df_time["time_bucket"] = df_time["review_date"].dt.to_period("Q")
+        df_time["time_bucket_str"] = df_time["time_bucket"].astype(str)
     else:  # Month
-        df_time["time_bucket"] = df_time["review_date"].dt.to_period("M").astype(str)
+        df_time["time_bucket"] = df_time["review_date"].dt.to_period("M")
+        df_time["time_bucket_str"] = df_time["time_bucket"].astype(str)
 
     grouped = (
-        df_time.groupby("time_bucket")
+        df_time.groupby("time_bucket_str")
         .agg(
             review_count=("rating", "count"),
             avg_rating=("rating", "mean"),
         )
         .reset_index()
-        .sort_values("time_bucket")
     )
+    
+    # Sort properly
+    if time_granularity == "Year":
+        grouped = grouped.sort_values("time_bucket_str")
+    else:
+        grouped = grouped.sort_values("time_bucket_str")
 
     if grouped.empty:
         st.info("No data available for the selected time range.")
         return
 
-    # Create dual-axis plot
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    # Create dual-axis plot with proper sizing
+    fig = make_subplots(
+        specs=[[{"secondary_y": True}]],
+        subplot_titles=("")
+    )
 
     # Add bar chart for review count
     fig.add_trace(
         go.Bar(
-            x=grouped["time_bucket"],
+            x=grouped["time_bucket_str"],
             y=grouped["review_count"],
             name="Review Count",
-            marker_color='rgba(102, 126, 234, 0.7)',
-            hovertemplate='<b>%{x}</b><br>Reviews: %{y:,}<extra></extra>'
+            marker=dict(
+                color=grouped["review_count"],
+                colorscale=[[0, '#1e3c72'], [0.5, '#2a5298'], [1, '#4a9eff']],
+                line=dict(color='rgba(255,255,255,0.3)', width=1)
+            ),
+            hovertemplate='<b>%{x}</b><br>Reviews: %{y:,}<extra></extra>',
+            opacity=0.85
         ),
         secondary_y=False,
     )
@@ -418,46 +434,70 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
     # Add line chart for average rating
     fig.add_trace(
         go.Scatter(
-            x=grouped["time_bucket"],
+            x=grouped["time_bucket_str"],
             y=grouped["avg_rating"],
             name="Avg Rating",
             mode='lines+markers',
-            line=dict(color='#ff6b6b', width=3),
-            marker=dict(size=8, symbol='circle'),
+            line=dict(color='#00bcd4', width=4, shape='spline'),
+            marker=dict(size=10, symbol='circle', color='#00bcd4', 
+                       line=dict(color='white', width=2)),
             hovertemplate='<b>%{x}</b><br>Rating: %{y:.2f}★<extra></extra>'
         ),
         secondary_y=True,
     )
 
-    # Update layout
+    # Update layout with better spacing
     fig.update_layout(
         title=dict(
             text=f"📈 Review Volume & Ratings Trend ({time_granularity})",
-            font=dict(size=24, color='#667eea', family='Arial Black')
+            font=dict(size=22, color='#2a5298', family='Arial Black'),
+            x=0.05
         ),
         hovermode='x unified',
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        height=500,
+        height=550,
+        showlegend=True,
         legend=dict(
             orientation="h",
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1
-        )
+            x=1,
+            bgcolor='rgba(0,0,0,0.5)',
+            font=dict(color='white', size=12)
+        ),
+        margin=dict(l=60, r=60, t=100, b=80)
     )
 
-    fig.update_xaxes(title_text=time_granularity, showgrid=True, gridcolor='rgba(128,128,128,0.2)')
-    fig.update_yaxes(title_text="Number of Reviews", secondary_y=False, showgrid=True, gridcolor='rgba(128,128,128,0.2)')
-    fig.update_yaxes(title_text="Average Rating (1-5★)", secondary_y=True, showgrid=False)
+    fig.update_xaxes(
+        title_text=time_granularity, 
+        showgrid=True, 
+        gridcolor='rgba(128,128,128,0.2)',
+        tickangle=-45 if len(grouped) > 12 else 0,
+        tickfont=dict(size=11)
+    )
+    fig.update_yaxes(
+        title_text="Number of Reviews", 
+        secondary_y=False, 
+        showgrid=True, 
+        gridcolor='rgba(128,128,128,0.2)',
+        title_font=dict(color='#2a5298', size=13)
+    )
+    fig.update_yaxes(
+        title_text="Average Rating (1-5★)", 
+        secondary_y=True, 
+        showgrid=False,
+        range=[0, 5.5],
+        title_font=dict(color='#00bcd4', size=13)
+    )
 
     st.plotly_chart(fig, use_container_width=True)
 
     # Insights
     with st.expander("💡 What This Chart Tells You", expanded=False):
         total_reviews = grouped["review_count"].sum()
-        peak_period = grouped.loc[grouped["review_count"].idxmax(), "time_bucket"]
+        peak_period = grouped.loc[grouped["review_count"].idxmax(), "time_bucket_str"]
         peak_count = grouped["review_count"].max()
         avg_rating_overall = grouped["avg_rating"].mean()
         
@@ -492,35 +532,42 @@ def plot_rating_distribution_interactive(df: pd.DataFrame):
         st.info("No ratings available for the current selection.")
         return
 
-    # Create colorful bar chart
+    # Create colorful bar chart with cold colors
     fig = go.Figure()
 
-    colors = ['#ff6b6b', '#f06595', '#cc5de8', '#845ef7', '#5c7cfa']
+    colors = ['#0d47a1', '#1565c0', '#1976d2', '#1e88e5', '#2196f3']
     
     fig.add_trace(go.Bar(
         x=rating_counts["rating"].astype(str) + "★",
         y=rating_counts["count"],
         text=rating_counts.apply(lambda x: f"{x['count']:,}<br>({x['percentage']:.1f}%)", axis=1),
-        textposition='auto',
-        marker_color=colors,
+        textposition='outside',
+        textfont=dict(size=12, color='white'),
+        marker=dict(
+            color=colors,
+            line=dict(color='rgba(255,255,255,0.4)', width=2)
+        ),
         hovertemplate='<b>%{x}</b><br>Reviews: %{y:,}<br>Share: %{text}<extra></extra>',
-        showlegend=False
+        showlegend=False,
+        opacity=0.9
     ))
 
     fig.update_layout(
         title=dict(
             text="⭐ Rating Distribution Breakdown",
-            font=dict(size=24, color='#667eea', family='Arial Black')
+            font=dict(size=22, color='#2a5298', family='Arial Black'),
+            x=0.05
         ),
         xaxis_title="Rating",
         yaxis_title="Number of Reviews",
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        height=450,
-        hovermode='x'
+        height=500,
+        hovermode='x',
+        margin=dict(l=60, r=60, t=100, b=80)
     )
 
-    fig.update_xaxes(showgrid=False)
+    fig.update_xaxes(showgrid=False, tickfont=dict(size=13))
     fig.update_yaxes(showgrid=True, gridcolor='rgba(128,128,128,0.2)')
 
     st.plotly_chart(fig, use_container_width=True)
@@ -557,33 +604,41 @@ def plot_helpfulness_analysis_interactive(df: pd.DataFrame):
         # Violin plot for helpfulness by rating
         fig = go.Figure()
 
-        for rating in sorted(df_valid["rating"].unique()):
+        colors_cold = ['#0d47a1', '#1565c0', '#1976d2', '#1e88e5', '#2196f3', '#42a5f5']
+        for i, rating in enumerate(sorted(df_valid["rating"].unique())):
             rating_data = df_valid[df_valid["rating"] == rating]["helpful_ratio"]
             fig.add_trace(go.Violin(
                 y=rating_data,
                 name=f"{int(rating)}★",
                 box_visible=True,
                 meanline_visible=True,
-                fillcolor=COLORS_VIBRANT[int(rating) - 1] if int(rating) <= len(COLORS_VIBRANT) else COLORS_VIBRANT[0],
-                opacity=0.7,
-                hovertemplate='Rating: %{fullData.name}<br>Helpfulness: %{y:.2f}<extra></extra>'
+                fillcolor=colors_cold[i % len(colors_cold)],
+                opacity=0.8,
+                line=dict(color=colors_cold[i % len(colors_cold)]),
+                hovertemplate='Rating: %{fullData.name}<br>Helpfulness: %{y:.3f}<extra></extra>'
             ))
 
         fig.update_layout(
-            title="🎻 Helpfulness Distribution by Rating",
+            title=dict(
+                text="🎻 Helpfulness Distribution by Rating",
+                font=dict(size=18, color='#2a5298', family='Arial Black'),
+                x=0.05
+            ),
             yaxis_title="Helpful Ratio",
-            showlegend=False,
+            showlegend=True,
+            legend=dict(orientation="h", y=-0.15, x=0.5, xanchor='center'),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
-            height=400
+            height=450,
+            margin=dict(l=60, r=40, t=80, b=80)
         )
 
-        fig.update_yaxes(showgrid=True, gridcolor='rgba(128,128,128,0.2)')
+        fig.update_yaxes(showgrid=True, gridcolor='rgba(128,128,128,0.2)', range=[0, 1])
 
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
-        # Heatmap-style correlation
+        # Average by rating
         avg_helpfulness = df_valid.groupby("rating")["helpful_ratio"].mean().reset_index()
         
         fig = go.Figure(go.Bar(
@@ -591,25 +646,33 @@ def plot_helpfulness_analysis_interactive(df: pd.DataFrame):
             y=avg_helpfulness["helpful_ratio"],
             marker=dict(
                 color=avg_helpfulness["helpful_ratio"],
-                colorscale='Viridis',
+                colorscale=[[0, '#0d47a1'], [0.5, '#1976d2'], [1, '#42a5f5']],
                 showscale=True,
-                colorbar=dict(title="Avg<br>Ratio")
+                colorbar=dict(title="Avg<br>Ratio", len=0.5),
+                line=dict(color='rgba(255,255,255,0.3)', width=2)
             ),
             text=avg_helpfulness["helpful_ratio"].round(3),
             textposition='outside',
-            hovertemplate='<b>%{x}</b><br>Avg Helpfulness: %{y:.3f}<extra></extra>'
+            textfont=dict(size=12, color='white'),
+            hovertemplate='<b>%{x}</b><br>Avg Helpfulness: %{y:.3f}<extra></extra>',
+            opacity=0.9
         ))
 
         fig.update_layout(
-            title="📊 Average Helpfulness by Rating",
+            title=dict(
+                text="📊 Average Helpfulness by Rating",
+                font=dict(size=18, color='#2a5298', family='Arial Black'),
+                x=0.05
+            ),
             xaxis_title="Rating",
             yaxis_title="Average Helpful Ratio",
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
-            height=400
+            height=450,
+            margin=dict(l=60, r=40, t=80, b=80)
         )
 
-        fig.update_yaxes(showgrid=True, gridcolor='rgba(128,128,128,0.2)')
+        fig.update_yaxes(showgrid=True, gridcolor='rgba(128,128,128,0.2)', range=[0, 1])
 
         st.plotly_chart(fig, use_container_width=True)
 
@@ -635,12 +698,21 @@ def plot_scatter_helpful_votes_interactive(df: pd.DataFrame):
     if "rating" in df_valid.columns:
         df_valid["rating_str"] = df_valid["rating"].astype(str) + "★"
         
+        # Cold color scale for ratings
+        color_map = {
+            "1★": "#0d47a1",
+            "2★": "#1565c0", 
+            "3★": "#1976d2",
+            "4★": "#1e88e5",
+            "5★": "#2196f3"
+        }
+        
         fig = px.scatter(
             df_valid,
             x="total_votes",
             y="helpful_yes",
             color="rating_str",
-            color_discrete_sequence=COLORS_VIBRANT,
+            color_discrete_map=color_map,
             opacity=0.6,
             title="🎯 Helpful Votes vs Total Votes (Color = Rating)",
             labels={"total_votes": "Total Votes", "helpful_yes": "Helpful Votes", "rating_str": "Rating"},
@@ -653,7 +725,8 @@ def plot_scatter_helpful_votes_interactive(df: pd.DataFrame):
             y="helpful_yes",
             opacity=0.5,
             title="🎯 Helpful Votes vs Total Votes",
-            labels={"total_votes": "Total Votes", "helpful_yes": "Helpful Votes"}
+            labels={"total_votes": "Total Votes", "helpful_yes": "Helpful Votes"},
+            color_discrete_sequence=['#1976d2']
         )
 
     # Add diagonal reference line
@@ -662,16 +735,30 @@ def plot_scatter_helpful_votes_interactive(df: pd.DataFrame):
         x=[0, max_val],
         y=[0, max_val],
         mode='lines',
-        line=dict(color='red', dash='dash', width=2),
-        name='100% Helpful',
+        line=dict(color='#00bcd4', dash='dash', width=3),
+        name='100% Helpful Line',
         hovertemplate='Perfect Agreement Line<extra></extra>'
     ))
 
     fig.update_layout(
+        title=dict(
+            text="🎯 Helpful Votes vs Total Votes (Color = Rating)",
+            font=dict(size=20, color='#2a5298', family='Arial Black'),
+            x=0.05
+        ),
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        height=500,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        height=550,
+        legend=dict(
+            orientation="h", 
+            yanchor="bottom", 
+            y=1.02, 
+            xanchor="right", 
+            x=1,
+            bgcolor='rgba(0,0,0,0.5)',
+            font=dict(color='white')
+        ),
+        margin=dict(l=60, r=60, t=100, b=80)
     )
 
     fig.update_xaxes(showgrid=True, gridcolor='rgba(128,128,128,0.2)')
@@ -681,7 +768,7 @@ def plot_scatter_helpful_votes_interactive(df: pd.DataFrame):
 
     with st.expander("💡 How to Read This Chart"):
         st.markdown("""
-        - **Points near the red line:** Most users found the review helpful
+        - **Points near the cyan line:** Most users found the review helpful
         - **Points below the line:** Mixed reception - many voted "not helpful"
         - **Color indicates rating:** See if certain ratings get more agreement
         - **Clusters:** Common patterns in user engagement
@@ -705,25 +792,33 @@ def plot_top_entities_interactive(df: pd.DataFrame):
                     orientation='h',
                     marker=dict(
                         color=product_counts["review_count"],
-                        colorscale='Sunset',
-                        showscale=False
+                        colorscale=[[0, '#0d47a1'], [0.5, '#1976d2'], [1, '#42a5f5']],
+                        showscale=False,
+                        line=dict(color='rgba(255,255,255,0.3)', width=1)
                     ),
                     text=product_counts["review_count"],
                     textposition='outside',
+                    textfont=dict(size=11, color='white'),
                     hovertemplate='<b>%{y}</b><br>Reviews: %{x:,}<extra></extra>'
                 ))
 
                 fig.update_layout(
-                    title="🏆 Top 15 Most Reviewed Products",
+                    title=dict(
+                        text="🏆 Top 15 Most Reviewed Products",
+                        font=dict(size=18, color='#2a5298', family='Arial Black'),
+                        x=0.05
+                    ),
                     xaxis_title="Number of Reviews",
                     yaxis_title="Product ID",
                     plot_bgcolor='rgba(0,0,0,0)',
                     paper_bgcolor='rgba(0,0,0,0)',
-                    height=500,
-                    yaxis={'categoryorder': 'total ascending'}
+                    height=550,
+                    yaxis={'categoryorder': 'total ascending'},
+                    margin=dict(l=120, r=60, t=80, b=60)
                 )
 
                 fig.update_xaxes(showgrid=True, gridcolor='rgba(128,128,128,0.2)')
+                fig.update_yaxes(tickfont=dict(size=10))
 
                 st.plotly_chart(fig, use_container_width=True)
 
@@ -740,25 +835,33 @@ def plot_top_entities_interactive(df: pd.DataFrame):
                     orientation='h',
                     marker=dict(
                         color=user_counts["review_count"],
-                        colorscale='Viridis',
-                        showscale=False
+                        colorscale=[[0, '#006064'], [0.5, '#00838f'], [1, '#26c6da']],
+                        showscale=False,
+                        line=dict(color='rgba(255,255,255,0.3)', width=1)
                     ),
                     text=user_counts["review_count"],
                     textposition='outside',
+                    textfont=dict(size=11, color='white'),
                     hovertemplate='<b>%{y}</b><br>Reviews: %{x:,}<extra></extra>'
                 ))
 
                 fig.update_layout(
-                    title="👥 Top 15 Most Active Reviewers",
+                    title=dict(
+                        text="👥 Top 15 Most Active Reviewers",
+                        font=dict(size=18, color='#2a5298', family='Arial Black'),
+                        x=0.05
+                    ),
                     xaxis_title="Number of Reviews",
                     yaxis_title="User ID",
                     plot_bgcolor='rgba(0,0,0,0)',
                     paper_bgcolor='rgba(0,0,0,0)',
-                    height=500,
-                    yaxis={'categoryorder': 'total ascending'}
+                    height=550,
+                    yaxis={'categoryorder': 'total ascending'},
+                    margin=dict(l=120, r=60, t=80, b=60)
                 )
 
                 fig.update_xaxes(showgrid=True, gridcolor='rgba(128,128,128,0.2)')
+                fig.update_yaxes(tickfont=dict(size=10))
 
                 st.plotly_chart(fig, use_container_width=True)
 
@@ -768,8 +871,8 @@ def plot_engagement_heatmap(df: pd.DataFrame):
     if "review_year" not in df.columns or "rating" not in df.columns:
         return
 
-    df_valid = df.dropna(subset=["review_year", "rating"])
-    if df_valid.empty:
+    df_valid = df.dropna(subset=["review_year", "rating", "helpful_ratio"])
+    if df_valid.empty or len(df_valid) < 10:
         return
 
     # Create pivot table
@@ -780,29 +883,71 @@ def plot_engagement_heatmap(df: pd.DataFrame):
         aggfunc="mean"
     )
 
-    if pivot.empty:
+    if pivot.empty or pivot.shape[0] < 2 or pivot.shape[1] < 2:
         return
+
+    # Sort properly
+    pivot = pivot.sort_index(ascending=False)
+    pivot = pivot.loc[:, sorted(pivot.columns)]
 
     fig = go.Figure(data=go.Heatmap(
         z=pivot.values,
-        x=pivot.columns,
+        x=[str(int(col)) for col in pivot.columns],
         y=[f"{int(r)}★" for r in pivot.index],
-        colorscale='RdYlGn',
+        colorscale=[
+            [0, '#0d47a1'],      # Deep blue (low)
+            [0.25, '#1976d2'],   # Medium blue
+            [0.5, '#42a5f5'],    # Light blue
+            [0.75, '#81c784'],   # Light green
+            [1, '#66bb6a']       # Green (high)
+        ],
         hoverongaps=False,
-        hovertemplate='Year: %{x}<br>Rating: %{y}<br>Avg Helpfulness: %{z:.2f}<extra></extra>',
-        colorbar=dict(title="Avg<br>Helpful<br>Ratio")
+        hovertemplate='<b>Year: %{x}</b><br>Rating: %{y}<br>Avg Helpfulness: %{z:.3f}<extra></extra>',
+        colorbar=dict(
+            title="Avg<br>Helpful<br>Ratio",
+            titleside="right",
+            tickmode="linear",
+            tick0=0,
+            dtick=0.1,
+            len=0.7
+        ),
+        zmin=0,
+        zmax=1
     ))
 
     fig.update_layout(
-        title="🔥 Engagement Heatmap: Helpfulness by Year & Rating",
+        title=dict(
+            text="🔥 Engagement Heatmap: Helpfulness by Year & Rating",
+            font=dict(size=20, color='#2a5298', family='Arial Black'),
+            x=0.05
+        ),
         xaxis_title="Year",
         yaxis_title="Rating",
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        height=400
+        height=450,
+        xaxis=dict(
+            tickmode='linear',
+            tick0=min(pivot.columns),
+            dtick=1,
+            tickfont=dict(size=11)
+        ),
+        yaxis=dict(
+            tickfont=dict(size=12)
+        )
     )
 
     st.plotly_chart(fig, use_container_width=True)
+    
+    with st.expander("💡 Reading the Heatmap"):
+        st.markdown("""
+        **How to interpret:**
+        
+        - **Green areas:** High helpfulness - users found these reviews very useful
+        - **Blue areas:** Lower helpfulness - reviews were less valued by the community
+        - **Patterns:** Look for consistency across years or rating-specific trends
+        - **Use case:** Identify which rating levels produce the most helpful content
+        """)
 
 
 # ---------------- MAIN APP -----------------
