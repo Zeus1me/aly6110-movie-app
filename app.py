@@ -27,8 +27,9 @@ st.set_page_config(
 # Custom CSS for professional sleek styling
 st.markdown("""
 <style>
-    /* Import professional font */
+    /* Import professional font and FontAwesome icons */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
     
     /* Global styling */
     * {
@@ -104,6 +105,198 @@ st.markdown("""
     .hero-intro strong {
         color: #4a9eff;
         font-weight: 700;
+    }
+    
+    /* Professional content cards */
+    .content-card {
+        background: linear-gradient(135deg, #1e2847 0%, #2a3554 100%);
+        border: 1px solid #4a9eff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .content-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(74, 158, 255, 0.3);
+        border-color: #00d4ff;
+    }
+    
+    .content-card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid rgba(74, 158, 255, 0.2);
+    }
+    
+    .content-card-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .content-card-icon i {
+        color: #0a0e27;
+        font-size: 1.2rem;
+    }
+    
+    .content-card-title {
+        color: #4a9eff;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+    
+    .content-card-body {
+        color: #d0d8e3;
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+    
+    .content-card-body ul {
+        margin: 0.5rem 0;
+        padding-left: 1.5rem;
+    }
+    
+    .content-card-body li {
+        margin: 0.5rem 0;
+        color: #d0d8e3;
+    }
+    
+    .content-card-body strong {
+        color: #4a9eff;
+        font-weight: 600;
+    }
+    
+    /* Feature grid */
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .feature-item {
+        background: linear-gradient(135deg, rgba(74, 158, 255, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
+        border: 1px solid rgba(74, 158, 255, 0.3);
+        border-radius: 10px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-item:hover {
+        background: linear-gradient(135deg, rgba(74, 158, 255, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+        border-color: #4a9eff;
+        transform: translateY(-2px);
+    }
+    
+    .feature-icon {
+        color: #4a9eff;
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .feature-title {
+        color: #4a9eff;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .feature-text {
+        color: #b8c5d6;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    /* Research question cards */
+    .research-card {
+        background: linear-gradient(135deg, #1e2847 0%, #2a3554 100%);
+        border-left: 4px solid #4a9eff;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin: 0.75rem 0;
+        transition: all 0.3s ease;
+    }
+    
+    .research-card:hover {
+        background: linear-gradient(135deg, #2a3554 0%, #1e2847 100%);
+        border-left-width: 6px;
+    }
+    
+    .research-number {
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%);
+        border-radius: 50%;
+        text-align: center;
+        line-height: 28px;
+        color: #0a0e27;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-right: 0.75rem;
+    }
+    
+    .research-title {
+        color: #4a9eff;
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .research-text {
+        color: #b8c5d6;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-left: 2.5rem;
+    }
+    
+    /* Tech stack cards */
+    .tech-card {
+        background: linear-gradient(135deg, rgba(74, 158, 255, 0.08) 0%, rgba(0, 212, 255, 0.08) 100%);
+        border: 1px solid rgba(74, 158, 255, 0.3);
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .tech-card:hover {
+        border-color: #4a9eff;
+        background: linear-gradient(135deg, rgba(74, 158, 255, 0.12) 0%, rgba(0, 212, 255, 0.12) 100%);
+        transform: translateY(-3px);
+    }
+    
+    .tech-icon {
+        font-size: 2.5rem;
+        color: #4a9eff;
+        margin-bottom: 1rem;
+    }
+    
+    .tech-title {
+        color: #4a9eff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .tech-list {
+        color: #d0d8e3;
+        font-size: 0.9rem;
+        line-height: 2;
     }
     
     /* Metric cards - Modern blue theme */
@@ -1319,113 +1512,219 @@ def main():
     with tab_overview:
         st.markdown("<h2 class='section-header'>Project Overview</h2>", unsafe_allow_html=True)
         
+        # Main overview card
         st.markdown("""
-        <div class='info-box'>
-        <p>This project explores <strong>large-scale Amazon movie and TV review data</strong> to understand how customers rate content, 
-        how those ratings evolve over time, and which reviews actually influence other users. Instead of scrolling through thousands 
-        of raw reviews, the dashboard provides an interactive view that highlights trends, patterns, and outliers in a way that is 
-        easy to interpret.</p>
-        
-        <p>From an analytics perspective, the goal is to move from raw text and star ratings to <strong>structured insight</strong> 
-        that can inform product, marketing, and content decisions. The dashboard is designed to support quick exploratory analysis 
-        as well as deeper dives into specific products, time periods, and engagement segments.</p>
+        <div class='content-card'>
+            <div class='content-card-header'>
+                <div class='content-card-icon'>
+                    <i class='fas fa-chart-line'></i>
+                </div>
+                <h3 class='content-card-title'>About This Project</h3>
+            </div>
+            <div class='content-card-body'>
+                <p>This project explores <strong>large-scale Amazon movie and TV review data</strong> to understand how customers rate content, 
+                how those ratings evolve over time, and which reviews actually influence other users. Instead of scrolling through thousands 
+                of raw reviews, the dashboard provides an interactive view that highlights trends, patterns, and outliers in a way that is 
+                easy to interpret.</p>
+                
+                <p>From an analytics perspective, the goal is to move from raw text and star ratings to <strong>structured insight</strong> 
+                that can inform product, marketing, and content decisions. The dashboard is designed to support quick exploratory analysis 
+                as well as deeper dives into specific products, time periods, and engagement segments.</p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("### What you can do with this dashboard")
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("### <i class='fas fa-rocket'></i> What You Can Do", unsafe_allow_html=True)
+        
+        # Feature grid with icons
+        st.markdown("""
+        <div class='feature-grid'>
+            <div class='feature-item'>
+                <div class='feature-icon'><i class='fas fa-chart-bar'></i></div>
+                <div class='feature-title'>Track Trends</div>
+                <div class='feature-text'>Monitor how review volume and average ratings change across years, quarters, or months</div>
+            </div>
+            
+            <div class='feature-item'>
+                <div class='feature-icon'><i class='fas fa-balance-scale'></i></div>
+                <div class='feature-title'>Understand Balance</div>
+                <div class='feature-text'>Analyze the distribution between positive, neutral, and negative reviews</div>
+            </div>
+            
+            <div class='feature-item'>
+                <div class='feature-icon'><i class='fas fa-thumbs-up'></i></div>
+                <div class='feature-title'>Measure Helpfulness</div>
+                <div class='feature-text'>Evaluate how "helpful" different reviews are by rating and over time</div>
+            </div>
+            
+            <div class='feature-item'>
+                <div class='feature-icon'><i class='fas fa-crosshairs'></i></div>
+                <div class='feature-title'>Identify Leaders</div>
+                <div class='feature-text'>Discover products and reviewers that attract disproportionate attention</div>
+            </div>
+            
+            <div class='feature-item'>
+                <div class='feature-icon'><i class='fas fa-briefcase'></i></div>
+                <div class='feature-title'>Support Decisions</div>
+                <div class='feature-text'>Enable data-driven choices for product, marketing, and content teams</div>
+            </div>
+            
+            <div class='feature-item'>
+                <div class='feature-icon'><i class='fas fa-search'></i></div>
+                <div class='feature-title'>Explore Patterns</div>
+                <div class='feature-text'>Navigate massive datasets through an intuitive, interactive interface</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # Target audience card
+        st.markdown("""
+        <div class='content-card'>
+            <div class='content-card-header'>
+                <div class='content-card-icon'>
+                    <i class='fas fa-users'></i>
+                </div>
+                <h3 class='content-card-title'>Who This Is For</h3>
+            </div>
+            <div class='content-card-body'>
+                <p>Whether you are a <strong>data analyst, product manager, or researcher</strong>, the dashboard acts as a front-end to an 
+                underlying big-data pipeline that processes millions of historical reviews into a clean, analysis-ready format.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        st.markdown("<h2 class='section-header'><i class='fas fa-database'></i> Dataset Context</h2>", unsafe_allow_html=True)
+        
+        # Dataset description card
+        st.markdown("""
+        <div class='content-card'>
+            <div class='content-card-header'>
+                <div class='content-card-icon'>
+                    <i class='fas fa-file-alt'></i>
+                </div>
+                <h3 class='content-card-title'>Data Structure</h3>
+            </div>
+            <div class='content-card-body'>
+                <p>The core dataset is a <strong>historical collection of Amazon Movies & TV reviews</strong>, originally compiled as part of a large 
+                public review corpus. Each row typically corresponds to a single user's review of a single product and contains:</p>
+                
+                <ul>
+                    <li><strong>Product ID</strong> – a unique identifier for each movie or TV title</li>
+                    <li><strong>User ID</strong> – an anonymised identifier for the reviewer</li>
+                    <li><strong>Rating</strong> – star rating, generally on a 1–5 scale</li>
+                    <li><strong>Timestamp</strong> – the date the review was submitted (Unix time → calendar dates)</li>
+                    <li><strong>Helpfulness votes</strong> – number of "helpful" votes and total votes from other users</li>
+                    <li><strong>Derived fields</strong> – review year, and a helpful_ratio measuring vote share</li>
+                </ul>
+                
+                <p>In this dashboard, you can either explore a prepared sample dataset or upload your own file with similar structure. 
+                The same cleaning and transformation steps are applied so that all visuals and filters work seamlessly across both.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # Key stats in grid
+        st.markdown("### <i class='fas fa-chart-pie'></i> Key Statistics", unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("""
-            - 📊 **Track** how review volume and average ratings change across years, quarters, or months
-            - ⚖️ **Understand** the balance between very positive, neutral, and negative reviews
-            - 🔍 **Analyse** how "helpful" different reviews are, by rating and over time
-            """)
+            <div class='content-card'>
+                <div class='content-card-body'>
+                    <p><i class='fas fa-layer-group' style='color: #4a9eff; margin-right: 10px;'></i><strong>Scale:</strong> Millions of reviews over multiple years</p>
+                    <p><i class='fas fa-calendar-alt' style='color: #4a9eff; margin-right: 10px;'></i><strong>Coverage:</strong> More than a decade of customer behaviour</p>
+                    <p><i class='fas fa-expand-arrows-alt' style='color: #4a9eff; margin-right: 10px;'></i><strong>Breadth:</strong> Hundreds of thousands of unique products</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
         with col2:
             st.markdown("""
-            - 🎯 **Identify** products and reviewers that attract disproportionate attention and engagement
-            - 💼 **Support** data-driven decisions for product, marketing, and content teams
-            - 🚀 **Explore** patterns in a massive dataset through an intuitive interface
-            """)
+            <div class='content-card'>
+                <div class='content-card-body'>
+                    <p><i class='fas fa-star' style='color: #4a9eff; margin-right: 10px;'></i><strong>Ratings:</strong> Average above 4★ with long tail</p>
+                    <p><i class='fas fa-comments' style='color: #4a9eff; margin-right: 10px;'></i><strong>Engagement:</strong> Community feedback via helpfulness votes</p>
+                    <p><i class='fas fa-check-circle' style='color: #4a9eff; margin-right: 10px;'></i><strong>Quality:</strong> Foundation for sentiment and dynamics analysis</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
+        st.markdown("---")
+        
+        st.markdown("<h2 class='section-header'><i class='fas fa-question-circle'></i> Research Questions</h2>", unsafe_allow_html=True)
+        
+        # Research questions as numbered cards
         st.markdown("""
-        <div class='info-box'>
-        <p>Whether you are a <strong>data analyst, product manager, or researcher</strong>, the dashboard acts as a front-end to an 
-        underlying big-data pipeline that processes millions of historical reviews into a clean, analysis-ready format.</p>
+        <div class='research-card'>
+            <div class='research-title'>
+                <span class='research-number'>1</span>
+                How have review volume and average ratings changed over time?
+            </div>
+            <div class='research-text'>
+                • Are there clear peaks in activity that might align with platform growth or major releases?<br>
+                • Do customers become more generous or more critical in later years?
+            </div>
+        </div>
+        
+        <div class='research-card'>
+            <div class='research-title'>
+                <span class='research-number'>2</span>
+                What does the overall rating distribution look like?
+            </div>
+            <div class='research-text'>
+                • What proportion of reviews are strongly positive (4–5★), neutral (3★), or negative (1–2★)?<br>
+                • Does this balance shift when we restrict the data to specific time windows or engagement levels?
+            </div>
+        </div>
+        
+        <div class='research-card'>
+            <div class='research-title'>
+                <span class='research-number'>3</span>
+                How does perceived helpfulness vary across ratings and over time?
+            </div>
+            <div class='research-text'>
+                • Are mid-range reviews (e.g., 3★) seen as more objective and therefore more helpful?<br>
+                • Does the community's standard for what counts as "helpful" change over the years?
+            </div>
+        </div>
+        
+        <div class='research-card'>
+            <div class='research-title'>
+                <span class='research-number'>4</span>
+                Which products and reviewers dominate attention and engagement?
+            </div>
+            <div class='research-text'>
+                • Which titles have unusually high review volume, and what does their rating profile look like?<br>
+                • Who are the most active reviewers, and how might their behaviour shape overall sentiment?
+            </div>
+        </div>
+        
+        <div class='research-card'>
+            <div class='research-title'>
+                <span class='research-number'>5</span>
+                Where should platform or business teams focus their efforts?
+            </div>
+            <div class='research-text'>
+                • Which segments show the biggest gaps between volume and quality?<br>
+                • Are there products where ratings are high but helpfulness is low (or vice versa)?
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("---")
-        
-        st.markdown("<h2 class='section-header'>Dataset Context</h2>", unsafe_allow_html=True)
-        
         st.markdown("""
-        The core dataset is a **historical collection of Amazon Movies & TV reviews**, originally compiled as part of a large 
-        public review corpus. Each row typically corresponds to a single user's review of a single product and contains:
-        
-        - **Product ID** – a unique identifier for each movie or TV title
-        - **User ID** – an anonymised identifier for the reviewer  
-        - **Rating** – star rating, generally on a 1–5 scale
-        - **Timestamp** – the date the review was submitted (stored as Unix time and converted to calendar dates)
-        - **Helpfulness votes** – number of "helpful" votes and total votes from other users
-        - **Derived fields** – review year, and a `helpful_ratio` measuring the share of votes that marked the review as helpful
-        
-        In this dashboard, you can either explore a prepared sample dataset based on this corpus, or upload your own file with a 
-        similar structure. The same cleaning and transformation steps are applied so that all visuals and filters work seamlessly 
-        across both.
-        """)
-        
-        st.markdown("### Key Stats")
-        
-        stats_col1, stats_col2 = st.columns(2)
-        
-        with stats_col1:
-            st.markdown("""
-            - **Scale:** Millions of individual movie and TV reviews collected over multiple years
-            - **Coverage:** Reviews spanning more than a decade of customer behaviour
-            - **Breadth:** Hundreds of thousands of unique products and a large, long-tail population of reviewers
-            """)
-        
-        with stats_col2:
-            st.markdown("""
-            - **Ratings:** Average rating typically sits above 4★, with a long tail of neutral and negative reviews
-            - **Engagement:** Many reviews receive at least some community feedback in the form of helpfulness votes
-            - **Quality:** Dataset provides foundation for studying both customer sentiment and review dynamics at scale
-            """)
-        
-        st.markdown("---")
-        
-        st.markdown("<h2 class='section-header'>Research Questions</h2>", unsafe_allow_html=True)
-        
-        st.markdown("""
-        These are the core research questions driving the dashboard:
-        
-        **1. How have review volume and average ratings changed over time?**
-        - Are there clear peaks in activity that might align with platform growth or major releases?
-        - Do customers become more generous or more critical in later years?
-        
-        **2. What does the overall rating distribution look like, and how does it change under different filters?**
-        - What proportion of reviews are strongly positive (4–5★), neutral (3★), or negative (1–2★)?
-        - Does this balance shift when we restrict the data to specific time windows, engagement levels, or products?
-        
-        **3. How does perceived helpfulness vary across ratings and over time?**
-        - Are mid-range reviews (e.g., 3★) seen as more objective and therefore more helpful?
-        - Does the community's standard for what counts as "helpful" change over the years?
-        
-        **4. Which products and reviewers dominate attention and engagement?**
-        - Which titles have unusually high review volume, and what does their rating profile look like?
-        - Who are the most active reviewers, and how might their behaviour shape overall sentiment?
-        
-        **5. Where should platform or business teams focus their efforts?**
-        - Which segments show the biggest gaps between volume and quality?
-        - Are there products where ratings are high but helpfulness is low (or vice versa), suggesting a need for moderation, 
-          promotion, or better content curation?
-        
-        These questions are reflected in the structure of the dashboard: time-based trends, rating distributions, helpfulness 
-        analysis, and "leaderboards" of products and reviewers.
-        """)
+        <div class='info-box'>
+            <p><i class='fas fa-info-circle' style='margin-right: 10px;'></i>These questions are reflected in the structure of the dashboard: 
+            time-based trends, rating distributions, helpfulness analysis, and "leaderboards" of products and reviewers.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
     with tab1:
         st.markdown("<h2 class='section-header'>Temporal Analysis</h2>", unsafe_allow_html=True)
@@ -1578,37 +1877,44 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("### Technology Stack")
+        st.markdown("### <i class='fas fa-cogs'></i> Technology Stack", unsafe_allow_html=True)
         
-        tech_col1, tech_col2, tech_col3 = st.columns(3)
-        
-        with tech_col1:
-            st.markdown("""
-            **📊 Data Processing:**
-            - AWS S3 (Storage)
-            - AWS Glue (ETL)
-            - PySpark (Processing)
-            - Parquet (Format)
-            """)
-        
-        with tech_col2:
-            st.markdown("""
-            **🎨 Visualization:**
-            - Streamlit (Framework)
-            - Plotly (Interactive Charts)
-            - Pandas (Data Manipulation)
-            - NumPy (Numerical Computing)
-            """)
-        
-        with tech_col3:
-            st.markdown("""
-            **☁️ Deployment:**
-            - Streamlit Cloud
-            - GitHub (Version Control)
-            - Python 3.13
-            - Continuous Integration
-            """)
-
+        st.markdown("""
+        <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;'>
+            <div class='tech-card'>
+                <div class='tech-icon'><i class='fas fa-server'></i></div>
+                <div class='tech-title'>Data Processing</div>
+                <div class='tech-list'>
+                    AWS S3 (Storage)<br>
+                    AWS Glue (ETL)<br>
+                    PySpark (Processing)<br>
+                    Parquet (Format)
+                </div>
+            </div>
+            
+            <div class='tech-card'>
+                <div class='tech-icon'><i class='fas fa-chart-area'></i></div>
+                <div class='tech-title'>Visualization</div>
+                <div class='tech-list'>
+                    Streamlit (Framework)<br>
+                    Plotly (Interactive Charts)<br>
+                    Pandas (Data Manipulation)<br>
+                    NumPy (Numerical Computing)
+                </div>
+            </div>
+            
+            <div class='tech-card'>
+                <div class='tech-icon'><i class='fas fa-cloud'></i></div>
+                <div class='tech-title'>Deployment</div>
+                <div class='tech-list'>
+                    Streamlit Cloud<br>
+                    GitHub (Version Control)<br>
+                    Python 3.13<br>
+                    Continuous Integration
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     # --------- DATA PREVIEW ---------
     st.markdown("<br><br>", unsafe_allow_html=True)
     with st.expander("🔍 Explore Raw Data", expanded=False):
