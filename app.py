@@ -18,10 +18,9 @@ st.set_page_config(
     layout="wide",
 )
 
-# Use the folder that contains this file (works on Streamlit Cloud & locally)
+# In Streamlit Cloud, use the folder that contains app.py
 PROJECT_ROOT = Path(__file__).parent
-# For deployment we keep the data file(s) in the same folder as app.py
-DATA_DIR = PROJECT_ROOT
+DATA_DIR = PROJECT_ROOT  # sample_reviews.parquet lives here
 
 sns.set_theme(style="whitegrid")
 plt.rcParams.update(
@@ -71,10 +70,10 @@ def load_parquet_folder(folder: Path) -> pd.DataFrame:
 def get_data() -> pd.DataFrame:
     df = load_parquet_folder(DATA_DIR)
 
-    # Standardise column names (lowercase)
+    # Standardise column names
     df.columns = [c.strip() for c in df.columns]
 
-    # Ensure key columns exist
+    # Ensure numeric columns
     if "rating" in df.columns:
         df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
 
@@ -83,6 +82,9 @@ def get_data() -> pd.DataFrame:
 
     if "total_votes" in df.columns:
         df["total_votes"] = pd.to_numeric(df["total_votes"], errors="coerce")
+
+    if "helpful_yes" in df.columns:
+        df["helpful_yes"] = pd.to_numeric(df["helpful_yes"], errors="coerce")
 
     # Build date / year information from unixTime where possible
     if "unixTime" in df.columns:
@@ -129,11 +131,7 @@ def sidebar_filters(df_full: pd.DataFrame) -> pd.DataFrame:
     # Year range slider (robust to edge cases)
     year_range = None
     if "review_year" in df.columns:
-        years = (
-            df["review_year"]
-            .dropna()
-            .astype(int)
-        )
+        years = df["review_year"].dropna().astype(int)
         if len(years) > 0:
             min_year = int(years.min())
             max_year = int(years.max())
@@ -170,16 +168,15 @@ def sidebar_filters(df_full: pd.DataFrame) -> pd.DataFrame:
     # Sentiment filter (if available)
     if "sentiment" in df.columns:
         sentiments = sorted(df["sentiment"].dropna().unique())
-        sentiment_default = sentiments
         sentiment_sel = st.sidebar.multiselect(
             "Sentiment",
             options=sentiments,
-            default=sentiment_default,
+            default=sentiments,
         )
         if sentiment_sel:
             df = df[df["sentiment"].isin(sentiment_sel)]
 
-    # Minimum total votes (to focus on more engaged reviews)
+    # Minimum total votes
     if "total_votes" in df.columns:
         min_votes = int(df["total_votes"].fillna(0).min())
         max_votes = int(df["total_votes"].fillna(0).max())
@@ -248,7 +245,7 @@ def plot_reviews_over_time(df: pd.DataFrame):
         """
 **Interpretation**
 
-- The bars show how many reviews were written each year.  
+- Bars show how many reviews were written each year.  
 - The line shows how the average rating changed over time.  
 Use this to spot years with unusual spikes in activity or changes in audience sentiment.
 """
@@ -299,7 +296,7 @@ def plot_helpfulness_by_rating(df: pd.DataFrame):
 
     df_valid = df.dropna(subset=["rating", "helpful_ratio"])
     if df_valid.empty:
-        st.info("No non-missing helpfulness values for this filter selection.")
+        st.info("No non-missing helpfulness values for this selection.")
         return
 
     fig, ax = plt.subplots()
@@ -320,8 +317,8 @@ def plot_helpfulness_by_rating(df: pd.DataFrame):
         """
 **How to read this**
 
-- Each box shows the spread of helpfulness scores for reviews with a given rating.  
-- Taller boxes or many outliers mean more variability in how other users vote on those reviews.  
+Each box shows the spread of helpfulness scores for reviews with a given rating.  
+Taller boxes or many outliers mean more variability in how other users vote on those reviews.
 """
     )
 
@@ -401,10 +398,8 @@ def plot_helpful_votes_vs_total(df: pd.DataFrame):
 
     st.markdown(
         """
-**Insight**
-
 Each point is a review.  
-Reviews far from the diagonal line “helpful ≈ total” are polarizing — many users mark them as unhelpful even though they get a lot of attention.
+Reviews near the diagonal have most votes marked helpful; points far below it are controversial or low-quality reviews.
 """
     )
 
@@ -427,5 +422,63 @@ Use the filters on the left to focus on specific time windows, rating bands, or 
 
     # --- High-level KPIs ---
     total_reviews = len(df)
-    avg_rating = df["rating"].mean() if "rating" in df.columns else np.nan
-    unique_products = df["productId"].nunique() if "productId" in_
+
+    if "rating" in df.columns:
+        avg_rating = float(df["rating"].mean())
+    else:
+        avg_rating = float("nan")
+
+    if "productId" in df.columns:
+        unique_products = int(df["productId"].nunique())
+    else:
+        unique_products = 0
+
+    if "userId" in df.columns:
+        unique_users = int(df["userId"].nunique())
+    else:
+        unique_users = 0
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Reviews in view", f"{total_reviews:,}")
+    c2.metric(
+        "Average rating",
+        f"{avg_rating:.2f}" if not np.isnan(avg_rating) else "N/A",
+    )
+    c3.metric("Unique products", f"{unique_products:,}")
+    c4.metric("Unique reviewers", f"{unique_users:,}")
+
+    st.markdown("---")
+
+    # --- Time-based insight ---
+    st.subheader("1. Review Volume and Ratings Over Time")
+    plot_reviews_over_time(df)
+
+    st.markdown("---")
+
+    # --- Rating distribution ---
+    st.subheader("2. Rating Distribution")
+    plot_rating_distribution(df)
+
+    st.markdown("---")
+
+    # --- Helpfulness analysis ---
+    st.subheader("3. Helpfulness Patterns")
+    plot_helpfulness_by_rating(df)
+    st.markdown("")
+    plot_helpful_votes_vs_total(df)
+
+    st.markdown("---")
+
+    # --- Products & reviewers ---
+    st.subheader("4. Top Products and Reviewers")
+    plot_top_entities(df)
+
+    st.markdown("---")
+    st.caption(
+        "Data source: Amazon Movies & TV reviews (sample). "
+        "Dashboard prepared for ALY6110 deployment on Streamlit Cloud."
+    )
+
+
+if __name__ == "__main__":
+    main()
