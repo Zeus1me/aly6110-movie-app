@@ -997,12 +997,12 @@ def plot_engagement_heatmap(df: pd.DataFrame):
             x=[str(int(col)) for col in pivot.columns],
             y=[f"{int(r)}★" for r in pivot.index],
             colorscale=[
-                [0.0, '#0d47a1'],
-                [0.2, '#1565c0'],
-                [0.4, '#1976d2'],
-                [0.6, '#42a5f5'],
-                [0.8, '#66bb6a'],
-                [1.0, '#81c784']
+                [0.0, '#1a0b2e'],    # Deep purple (very low)
+                [0.2, '#3d1e6d'],    # Dark purple
+                [0.4, '#7e2e84'],    # Medium purple
+                [0.6, '#e8345f'],    # Hot pink
+                [0.8, '#ff6b35'],    # Vibrant orange
+                [1.0, '#f7b731']     # Bright yellow-orange (very high)
             ],
             hoverongaps=False,
             hovertemplate='<b>Year: %{x}</b><br>Rating: %{y}<br>Avg Helpfulness: %{z:.3f}<extra></extra>',
@@ -1067,8 +1067,9 @@ def plot_engagement_heatmap(df: pd.DataFrame):
             st.markdown(f"""
             **How to interpret:**
             
-            - **Green cells:** High helpfulness ratio (up to {max_helpfulness:.3f}) - users found these reviews very useful
-            - **Blue cells:** Lower helpfulness ratio (down to {min_helpfulness:.3f}) - reviews were less valued
+            - **Yellow-Orange cells:** High helpfulness ratio (up to {max_helpfulness:.3f}) - users found these reviews very useful
+            - **Purple cells:** Lower helpfulness ratio (down to {min_helpfulness:.3f}) - reviews were less valued
+            - **Pink cells:** Medium helpfulness
             - **Average:** {avg_helpfulness:.3f} across all year-rating combinations
             
             {year_msg}
