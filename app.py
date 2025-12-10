@@ -1919,78 +1919,51 @@ def main():
         
         st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
-        # Analytics design card
+        # Analytics design card - split into safe chunks
+        st.markdown("<div class='content-card'>", unsafe_allow_html=True)
         st.markdown("""
-        <div class='content-card'>
             <div class='content-card-header'>
-                <div class='content-card-icon'>
-                    <i class='fas fa-chart-line'></i>
-                </div>
+                <div class='content-card-icon'><i class='fas fa-chart-line'></i></div>
                 <h3 class='content-card-title'>3. Analytics and Visual Design</h3>
             </div>
-            <div class='content-card-body'>
-                <p>The dashboard organises analysis into several views, each tied back to the research questions:</p>
-                
-                <p><i class='fas fa-chart-area' style='color: #4a9eff; margin-right: 8px;'></i><strong>Trends:</strong> 
-                Aggregates reviews by year, quarter, or month. Plots review volume alongside average rating on a dual-axis chart. 
-                Used to answer how ratings and engagement evolve over time.</p>
-                
-                <p><i class='fas fa-star' style='color: #4a9eff; margin-right: 8px;'></i><strong>Ratings:</strong> 
-                Calculates counts and percentages for each rating level. Groups ratings into positive (4–5★), neutral (3★), and negative (1–2★) bands. 
-                Shows how the distribution shifts as you adjust filters.</p>
-                
-                <p><i class='fas fa-thumbs-up' style='color: #4a9eff; margin-right: 8px;'></i><strong>Helpfulness:</strong> 
-                Explores how helpfulness scores are distributed for different rating levels. Uses both distribution plots and scatter plots. 
-                Highlights whether certain kinds of reviews attract more trust.</p>
-                
-                <p><i class='fas fa-trophy' style='color: #4a9eff; margin-right: 8px;'></i><strong>Leaders:</strong> 
-                Ranks products by number of reviews to reveal "hero" titles. Ranks reviewers by activity to highlight power users and influencers. 
-                Helps explain where most engagement is concentrated.</p>
-                
-                <p><strong>Global filters</strong> in the sidebar control the sample size, time window, rating subset, and engagement thresholds 
-                so that all visuals stay in sync when you explore a specific slice of the data.</p>
-            </div>
-        </div>
         """, unsafe_allow_html=True)
+        st.markdown("<div class='content-card-body'>", unsafe_allow_html=True)
+        st.markdown("<p>The dashboard organises analysis into several views, each tied back to the research questions:</p>", unsafe_allow_html=True)
+        st.markdown("<p><i class='fas fa-chart-area' style='color: #4a9eff; margin-right: 8px;'></i><strong>Trends:</strong> Aggregates reviews by year, quarter, or month. Plots review volume alongside average rating on a dual-axis chart. Used to answer how ratings and engagement evolve over time.</p>", unsafe_allow_html=True)
+        st.markdown("<p><i class='fas fa-star' style='color: #4a9eff; margin-right: 8px;'></i><strong>Ratings:</strong> Calculates counts and percentages for each rating level. Groups ratings into positive (4–5★), neutral (3★), and negative (1–2★) bands. Shows how the distribution shifts as you adjust filters.</p>", unsafe_allow_html=True)
+        st.markdown("<p><i class='fas fa-thumbs-up' style='color: #4a9eff; margin-right: 8px;'></i><strong>Helpfulness:</strong> Explores how helpfulness scores are distributed for different rating levels. Uses both distribution plots and scatter plots. Highlights whether certain kinds of reviews attract more trust.</p>", unsafe_allow_html=True)
+        st.markdown("<p><i class='fas fa-trophy' style='color: #4a9eff; margin-right: 8px;'></i><strong>Leaders:</strong> Ranks products by number of reviews to reveal 'hero' titles. Ranks reviewers by activity to highlight power users and influencers. Helps explain where most engagement is concentrated.</p>", unsafe_allow_html=True)
+        st.markdown("<p><strong>Global filters</strong> in the sidebar control the sample size, time window, rating subset, and engagement thresholds so that all visuals stay in sync when you explore a specific slice of the data.</p>", unsafe_allow_html=True)
+        st.markdown("</div></div>", unsafe_allow_html=True)
         
         st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
-        # Limitations card
+        # Limitations card - split into safe chunks
+        st.markdown("<div class='content-card'>", unsafe_allow_html=True)
         st.markdown("""
-        <div class='content-card'>
             <div class='content-card-header'>
-                <div class='content-card-icon'>
-                    <i class='fas fa-exclamation-triangle'></i>
-                </div>
+                <div class='content-card-icon'><i class='fas fa-exclamation-triangle'></i></div>
                 <h3 class='content-card-title'>4. Interpretation and Limitations</h3>
             </div>
-            <div class='content-card-body'>
-                <p><i class='fas fa-exclamation-circle' style='color: #4a9eff; margin-right: 8px;'></i><strong>Important Considerations:</strong></p>
-                
-                <ul>
-                    <li>The dashboard is <strong>exploratory, not causal</strong>: it is designed to surface patterns and hypotheses rather 
-                    than formal causal claims</li>
-                    
-                    <li><strong>Helpfulness</strong> is based on user votes and may be influenced by visibility, early reviews, or social 
-                    dynamics on the platform</li>
-                    
-                    <li><strong>Uploaded datasets</strong> may differ in coverage, schema, or quality, so results should always be read in 
-                    the context of the underlying data</li>
-                </ul>
-                
-                <p>Despite these limitations, the combination of <strong>scalable preprocessing and interactive visual analytics</strong> 
-                offers a powerful way to understand how customers engage with movie and TV content over time, which reviews they trust, 
-                and where businesses might focus their attention.</p>
-            </div>
-        </div>
         """, unsafe_allow_html=True)
+        st.markdown("<div class='content-card-body'>", unsafe_allow_html=True)
+        st.markdown("<p><i class='fas fa-exclamation-circle' style='color: #4a9eff; margin-right: 8px;'></i><strong>Important Considerations:</strong></p>", unsafe_allow_html=True)
+        st.markdown("<ul>", unsafe_allow_html=True)
+        st.markdown("<li>The dashboard is <strong>exploratory, not causal</strong>: it is designed to surface patterns and hypotheses rather than formal causal claims</li>", unsafe_allow_html=True)
+        st.markdown("<li><strong>Helpfulness</strong> is based on user votes and may be influenced by visibility, early reviews, or social dynamics on the platform</li>", unsafe_allow_html=True)
+        st.markdown("<li><strong>Uploaded datasets</strong> may differ in coverage, schema, or quality, so results should always be read in the context of the underlying data</li>", unsafe_allow_html=True)
+        st.markdown("</ul>", unsafe_allow_html=True)
+        st.markdown("<p>Despite these limitations, the combination of <strong>scalable preprocessing and interactive visual analytics</strong> offers a powerful way to understand how customers engage with movie and TV content over time, which reviews they trust, and where businesses might focus their attention.</p>", unsafe_allow_html=True)
+        st.markdown("</div></div>", unsafe_allow_html=True)
         
         st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
         st.markdown("### <i class='fas fa-cogs'></i> Technology Stack", unsafe_allow_html=True)
         
+        st.markdown("<div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0;'>", unsafe_allow_html=True)
+        
+        # Data Processing card
         st.markdown("""
-        <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0;'>
             <div class='tech-card'>
                 <div class='tech-icon'><i class='fas fa-server'></i></div>
                 <div class='tech-title'>Data Processing</div>
@@ -2001,7 +1974,10 @@ def main():
                     <div class='tech-item'>Parquet<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Columnar Format)</span></div>
                 </div>
             </div>
-            
+        """, unsafe_allow_html=True)
+        
+        # Visualization card
+        st.markdown("""
             <div class='tech-card'>
                 <div class='tech-icon'><i class='fas fa-chart-area'></i></div>
                 <div class='tech-title'>Visualization</div>
@@ -2012,7 +1988,10 @@ def main():
                     <div class='tech-item'>NumPy<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Numerical Computing)</span></div>
                 </div>
             </div>
-            
+        """, unsafe_allow_html=True)
+        
+        # Deployment card
+        st.markdown("""
             <div class='tech-card'>
                 <div class='tech-icon'><i class='fas fa-cloud'></i></div>
                 <div class='tech-title'>Deployment</div>
@@ -2023,8 +2002,9 @@ def main():
                     <div class='tech-item'>CI/CD<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Continuous Integration)</span></div>
                 </div>
             </div>
-        </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True)
     
     with tab1:
         st.markdown("<h2 class='section-header'><i class='fas fa-chart-area'></i> TEMPORAL ANALYSIS</h2>", unsafe_allow_html=True)
@@ -2060,26 +2040,18 @@ def main():
             st.markdown("<h2 class='section-header'><i class='fas fa-trophy'></i> TOP PERFORMERS</h2>", unsafe_allow_html=True)
             plot_top_entities_interactive(df)
             
+            st.markdown("<div class='content-card'>", unsafe_allow_html=True)
             st.markdown("""
-            <div class='content-card'>
                 <div class='content-card-header'>
-                    <div class='content-card-icon'>
-                        <i class='fas fa-lightbulb'></i>
-                    </div>
+                    <div class='content-card-icon'><i class='fas fa-lightbulb'></i></div>
                     <h3 class='content-card-title'>Why This Matters</h3>
                 </div>
-                <div class='content-card-body'>
-                    <p><i class='fas fa-trophy' style='color: #4a9eff; margin-right: 8px;'></i><strong>Top Products:</strong> 
-                    Identify your "hero" SKUs that drive conversation and engagement</p>
-                    
-                    <p><i class='fas fa-user-friends' style='color: #4a9eff; margin-right: 8px;'></i><strong>Power Reviewers:</strong> 
-                    Recognize influencers who could be leveraged for marketing or loyalty programs</p>
-                    
-                    <p><i class='fas fa-bullseye' style='color: #4a9eff; margin-right: 8px;'></i><strong>Content Strategy:</strong> 
-                    Focus resources on high-traffic products and cultivate relationships with active reviewers</p>
-                </div>
-            </div>
             """, unsafe_allow_html=True)
+            st.markdown("<div class='content-card-body'>", unsafe_allow_html=True)
+            st.markdown("<p><i class='fas fa-trophy' style='color: #4a9eff; margin-right: 8px;'></i><strong>Top Products:</strong> Identify your 'hero' SKUs that drive conversation and engagement</p>", unsafe_allow_html=True)
+            st.markdown("<p><i class='fas fa-user-friends' style='color: #4a9eff; margin-right: 8px;'></i><strong>Power Reviewers:</strong> Recognize influencers who could be leveraged for marketing or loyalty programs</p>", unsafe_allow_html=True)
+            st.markdown("<p><i class='fas fa-bullseye' style='color: #4a9eff; margin-right: 8px;'></i><strong>Content Strategy:</strong> Focus resources on high-traffic products and cultivate relationships with active reviewers</p>", unsafe_allow_html=True)
+            st.markdown("</div></div>", unsafe_allow_html=True)
         else:
             st.info("💡 Enable 'Advanced analytics' in the sidebar to see top products and reviewers")
 
