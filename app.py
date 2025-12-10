@@ -1595,90 +1595,104 @@ def main():
     with tab_overview:
         st.markdown("<h2 class='section-header'><i class='fas fa-info-circle'></i> PROJECT OVERVIEW</h2>", unsafe_allow_html=True)
         
-        # Main overview card
+        # Main overview card - split into smaller chunks
+        st.markdown("<div class='content-card'>", unsafe_allow_html=True)
         st.markdown("""
-        <div class='content-card'>
             <div class='content-card-header'>
-                <div class='content-card-icon'>
-                    <i class='fas fa-chart-line'></i>
-                </div>
+                <div class='content-card-icon'><i class='fas fa-chart-line'></i></div>
                 <h3 class='content-card-title'>About This Project</h3>
             </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
             <div class='content-card-body'>
                 <p>This project explores <strong>large-scale Amazon movie and TV review data</strong> to understand how customers rate content, 
                 how those ratings evolve over time, and which reviews actually influence other users. Instead of scrolling through thousands 
                 of raw reviews, the dashboard provides an interactive view that highlights trends, patterns, and outliers in a way that is 
                 easy to interpret.</p>
-                
                 <p>From an analytics perspective, the goal is to move from raw text and star ratings to <strong>structured insight</strong> 
                 that can inform product, marketing, and content decisions. The dashboard is designed to support quick exploratory analysis 
                 as well as deeper dives into specific products, time periods, and engagement segments.</p>
             </div>
-        </div>
         """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
         
         st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
         st.markdown("### <i class='fas fa-rocket'></i> What You Can Do", unsafe_allow_html=True)
         
-        # Feature grid with icons
+        # Feature grid with icons - split into manageable chunks
+        st.markdown("<div class='feature-grid'>", unsafe_allow_html=True)
+        
         st.markdown("""
-        <div class='feature-grid'>
             <div class='feature-item'>
                 <div class='feature-icon'><i class='fas fa-chart-bar'></i></div>
                 <div class='feature-title'>Track Trends</div>
                 <div class='feature-text'>Monitor how review volume and average ratings change across years, quarters, or months</div>
             </div>
-            
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
             <div class='feature-item'>
                 <div class='feature-icon'><i class='fas fa-balance-scale'></i></div>
                 <div class='feature-title'>Understand Balance</div>
                 <div class='feature-text'>Analyze the distribution between positive, neutral, and negative reviews</div>
             </div>
-            
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
             <div class='feature-item'>
                 <div class='feature-icon'><i class='fas fa-thumbs-up'></i></div>
                 <div class='feature-title'>Measure Helpfulness</div>
                 <div class='feature-text'>Evaluate how "helpful" different reviews are by rating and over time</div>
             </div>
-            
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
             <div class='feature-item'>
                 <div class='feature-icon'><i class='fas fa-crosshairs'></i></div>
                 <div class='feature-title'>Identify Leaders</div>
                 <div class='feature-text'>Discover products and reviewers that attract disproportionate attention</div>
             </div>
-            
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
             <div class='feature-item'>
                 <div class='feature-icon'><i class='fas fa-briefcase'></i></div>
                 <div class='feature-title'>Support Decisions</div>
                 <div class='feature-text'>Enable data-driven choices for product, marketing, and content teams</div>
             </div>
-            
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
             <div class='feature-item'>
                 <div class='feature-icon'><i class='fas fa-search'></i></div>
                 <div class='feature-title'>Explore Patterns</div>
                 <div class='feature-text'>Navigate massive datasets through an intuitive, interactive interface</div>
             </div>
-        </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True)
         
         st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
         st.markdown("<h2 class='section-header'><i class='fas fa-database'></i> DATASET CONTEXT</h2>", unsafe_allow_html=True)
         
-        # Dataset description card
+        # Dataset description card - split into chunks
+        st.markdown("<div class='content-card'>", unsafe_allow_html=True)
         st.markdown("""
-        <div class='content-card'>
             <div class='content-card-header'>
-                <div class='content-card-icon'>
-                    <i class='fas fa-file-alt'></i>
-                </div>
+                <div class='content-card-icon'><i class='fas fa-file-alt'></i></div>
                 <h3 class='content-card-title'>Data Structure</h3>
             </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
             <div class='content-card-body'>
                 <p>The core dataset is a <strong>historical collection of Amazon Movies & TV reviews</strong>, originally compiled as part of a large 
                 public review corpus. Each row typically corresponds to a single user's review of a single product and contains:</p>
-                
+            </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+            <div class='content-card-body'>
                 <ul>
                     <li><strong>Product ID</strong> – a unique identifier for each movie or TV title</li>
                     <li><strong>User ID</strong> – an anonymised identifier for the reviewer</li>
@@ -1687,12 +1701,15 @@ def main():
                     <li><strong>Helpfulness votes</strong> – number of "helpful" votes and total votes from other users</li>
                     <li><strong>Derived fields</strong> – review year, and a helpful_ratio measuring vote share</li>
                 </ul>
-                
+            </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+            <div class='content-card-body'>
                 <p>In this dashboard, you can either explore a prepared sample dataset or upload your own file with similar structure. 
                 The same cleaning and transformation steps are applied so that all visuals and filters work seamlessly across both.</p>
             </div>
-        </div>
         """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
         
         st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
