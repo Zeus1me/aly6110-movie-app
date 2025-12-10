@@ -124,7 +124,7 @@ def preprocess_reviews(df: pd.DataFrame) -> pd.DataFrame:
 # ---------------- SIDEBAR FILTERS -----------------
 
 
-def sidebar_filters(df_full: pd.DataFrame) -> tuple[pd.DataFrame, bool]:
+def sidebar_filters(df_full: pd.DataFrame):
     st.sidebar.header("Global filters")
 
     # --- Sample size slider (performance control) ---
@@ -193,7 +193,7 @@ def sidebar_filters(df_full: pd.DataFrame) -> tuple[pd.DataFrame, bool]:
 
     # --- Rating filter ---
     if "rating" in df.columns:
-        st.sidebar.subheader("Rating & sentiment")
+        st.sidebar.subheader("Ratings")
         unique_ratings = sorted(df["rating"].dropna().unique())
         rating_options = st.sidebar.multiselect(
             "Ratings to include",
@@ -202,17 +202,6 @@ def sidebar_filters(df_full: pd.DataFrame) -> tuple[pd.DataFrame, bool]:
         )
         if rating_options:
             df = df[df["rating"].isin(rating_options)]
-
-    # --- Sentiment filter ---
-    if "sentiment" in df.columns:
-        sentiments = sorted(df["sentiment"].dropna().unique())
-        sentiment_sel = st.sidebar.multiselect(
-            "Sentiment",
-            options=sentiments,
-            default=sentiments,
-        )
-        if sentiment_sel:
-            df = df[df["sentiment"].isin(sentiment_sel)]
 
     st.sidebar.markdown("---")
 
@@ -516,7 +505,7 @@ This dashboard lets you explore the **Amazon Movies & TV reviews** dataset from 
 - How **helpful voters** interact with reviews  
 - Which **products** and **reviewers** dominate the conversation  
 
-Use the filters on the left to zoom in on specific time windows, rating bands, sentiment buckets,
+Use the filters on the left to zoom in on specific time windows, rating bands,
 and engagement levels.
 """
     )
