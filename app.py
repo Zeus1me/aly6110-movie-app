@@ -478,6 +478,39 @@ st.markdown("""
         border: none !important;
         font-weight: 700 !important;
     }
+    
+    /* Visual dividers */
+    .visual-divider {
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #4a9eff, transparent);
+        margin: 2rem 0;
+        opacity: 0.5;
+    }
+    
+    .section-divider {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(74, 158, 255, 0.3), transparent);
+        margin: 2rem 0;
+    }
+    
+    /* Code blocks */
+    .code-block {
+        background: #0a0e27;
+        border: 1px solid #4a9eff;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        color: #00d4ff;
+        overflow-x: auto;
+    }
+    
+    .code-block code {
+        color: #00d4ff;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1504,13 +1537,13 @@ def main():
 
     # --------- MAIN VISUALIZATIONS ---------
     
-    # Tab-based navigation with Overview and Methodology
-    tab_overview, tab1, tab2, tab3, tab4, tab_method = st.tabs([
-        "📋 Overview", "📈 Trends", "⭐ Ratings", "💡 Helpfulness", "🏆 Leaders", "🧪 Methodology"
+    # Tab-based navigation with reordered tabs
+    tab_overview, tab_method, tab1, tab2, tab3, tab4 = st.tabs([
+        "📋 Overview", "🧪 Methodology", "📈 Trends", "⭐ Ratings", "💡 Helpfulness", "🏆 Leaders"
     ])
 
     with tab_overview:
-        st.markdown("<h2 class='section-header'>Project Overview</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 class='section-header'><i class='fas fa-info-circle'></i> PROJECT OVERVIEW</h2>", unsafe_allow_html=True)
         
         # Main overview card
         st.markdown("""
@@ -1534,7 +1567,8 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
+        
         st.markdown("### <i class='fas fa-rocket'></i> What You Can Do", unsafe_allow_html=True)
         
         # Feature grid with icons
@@ -1578,7 +1612,7 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
         # Target audience card
         st.markdown("""
@@ -1596,9 +1630,9 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("---")
+        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
         
-        st.markdown("<h2 class='section-header'><i class='fas fa-database'></i> Dataset Context</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 class='section-header'><i class='fas fa-database'></i> DATASET CONTEXT</h2>", unsafe_allow_html=True)
         
         # Dataset description card
         st.markdown("""
@@ -1628,7 +1662,7 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
         # Key stats in grid
         st.markdown("### <i class='fas fa-chart-pie'></i> Key Statistics", unsafe_allow_html=True)
@@ -1657,9 +1691,9 @@ def main():
             </div>
             """, unsafe_allow_html=True)
         
-        st.markdown("---")
+        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
         
-        st.markdown("<h2 class='section-header'><i class='fas fa-question-circle'></i> Research Questions</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 class='section-header'><i class='fas fa-question-circle'></i> RESEARCH QUESTIONS</h2>", unsafe_allow_html=True)
         
         # Research questions as numbered cards
         st.markdown("""
@@ -1725,157 +1759,184 @@ def main():
             time-based trends, rating distributions, helpfulness analysis, and "leaderboards" of products and reviewers.</p>
         </div>
         """, unsafe_allow_html=True)
-
-    with tab1:
-        st.markdown("<h2 class='section-header'>Temporal Analysis</h2>", unsafe_allow_html=True)
-        
-        col_a, col_b = st.columns([3, 1])
-        with col_b:
-            time_granularity = st.selectbox(
-                "Time granularity",
-                options=["Year", "Quarter", "Month"],
-                index=0,
-                help="Choose how to aggregate the time series"
-            )
-        
-        plot_reviews_over_time_interactive(df, time_granularity=time_granularity)
-        
-        if advanced:
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.markdown("<h2 class='section-header'>Engagement Patterns</h2>", unsafe_allow_html=True)
-            plot_engagement_heatmap(df)
-
-    with tab2:
-        st.markdown("<h2 class='section-header'>Rating Distribution</h2>", unsafe_allow_html=True)
-        plot_rating_distribution_interactive(df)
-
-    with tab3:
-        st.markdown("<h2 class='section-header'>Helpfulness Insights</h2>", unsafe_allow_html=True)
-        plot_helpfulness_analysis_interactive(df)
-        st.markdown("<br>", unsafe_allow_html=True)
-        plot_scatter_helpful_votes_interactive(df)
-
-    with tab4:
-        if advanced:
-            st.markdown("<h2 class='section-header'>Top Performers</h2>", unsafe_allow_html=True)
-            plot_top_entities_interactive(df)
-            
-            with st.expander("💡 Why This Matters"):
-                st.markdown("""
-                **Strategic Insights:**
-                
-                - **Top Products:** Identify your "hero" SKUs that drive conversation and engagement
-                - **Power Reviewers:** Recognize influencers who could be leveraged for marketing or loyalty programs
-                - **Content Strategy:** Focus resources on high-traffic products and cultivate relationships with active reviewers
-                """)
-        else:
-            st.info("💡 Enable 'Advanced analytics' in the sidebar to see top products and reviewers")
+    
     
     with tab_method:
-        st.markdown("<h2 class='section-header'>Methodology</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 class='section-header'><i class='fas fa-flask'></i> METHODOLOGY</h2>", unsafe_allow_html=True)
         
+        # Intro card
         st.markdown("""
-        <div class='info-box'>
-        <p>To keep the analysis <strong>transparent and reproducible</strong>, this tab summarises how the data was prepared 
-        and how the dashboard produces its metrics.</p>
+        <div class='content-card'>
+            <div class='content-card-header'>
+                <div class='content-card-icon'>
+                    <i class='fas fa-info-circle'></i>
+                </div>
+                <h3 class='content-card-title'>Purpose</h3>
+            </div>
+            <div class='content-card-body'>
+                <p>To keep the analysis <strong>transparent and reproducible</strong>, this tab summarises how the data was prepared 
+                and how the dashboard produces its metrics.</p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("### 1. Data Source and Scope")
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
+        # Data Source card
         st.markdown("""
-        - The default dataset is a **large-scale collection of Amazon Movies & TV reviews**, where each row represents a single review event
-        - The underlying corpus includes star ratings, timestamps, product and user IDs, and community feedback on helpfulness
-        - The dashboard also supports **user-uploaded datasets** in CSV or Parquet format, as long as they contain broadly similar 
-          columns (e.g., product, user, rating, time, helpful votes, total votes)
-        """)
+        <div class='content-card'>
+            <div class='content-card-header'>
+                <div class='content-card-icon'>
+                    <i class='fas fa-database'></i>
+                </div>
+                <h3 class='content-card-title'>1. Data Source and Scope</h3>
+            </div>
+            <div class='content-card-body'>
+                <ul>
+                    <li>The default dataset is a <strong>large-scale collection of Amazon Movies & TV reviews</strong>, where each row represents a single review event</li>
+                    <li>The underlying corpus includes star ratings, timestamps, product and user IDs, and community feedback on helpfulness</li>
+                    <li>The dashboard also supports <strong>user-uploaded datasets</strong> in CSV or Parquet format, as long as they contain broadly similar 
+                      columns (e.g., product, user, rating, time, helpful votes, total votes)</li>
+                </ul>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
-        st.markdown("### 2. Pre-processing and Feature Engineering")
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
+        # Preprocessing card
         st.markdown("""
-        Before the data reaches the dashboard, it goes through a **cleaning and transformation pipeline** using big-data tools 
-        (PySpark / AWS Glue) and then a final light preprocessing step in Python.
-        """)
+        <div class='content-card'>
+            <div class='content-card-header'>
+                <div class='content-card-icon'>
+                    <i class='fas fa-cogs'></i>
+                </div>
+                <h3 class='content-card-title'>2. Pre-processing and Feature Engineering</h3>
+            </div>
+            <div class='content-card-body'>
+                <p>Before the data reaches the dashboard, it goes through a <strong>cleaning and transformation pipeline</strong> using big-data tools 
+                (PySpark / AWS Glue) and then a final light preprocessing step in Python.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("""
-            **Upstream Pipeline (PySpark / AWS Glue):**
-            
-            - ✅ **Schema normalisation** – ensure consistent column names and data types across raw files
-            - ✅ **Type casting** – convert ratings, vote counts and timestamps to numeric formats
-            - ✅ **Time features** – derive calendar dates from Unix timestamps and extract `review_year`
-            - ✅ **Helpfulness metric** – compute `helpful_ratio = helpful_yes / total_votes` with safeguards
-            - ✅ **Quality checks** – filter clearly invalid rows, handle extreme outliers
-            
-            The cleaned outputs are written to **Parquet** for efficient storage and retrieval.
-            """)
+            <div class='content-card'>
+                <div class='content-card-header'>
+                    <div class='content-card-icon'>
+                        <i class='fas fa-cloud-upload-alt'></i>
+                    </div>
+                    <h3 class='content-card-title'>Upstream Pipeline</h3>
+                </div>
+                <div class='content-card-body'>
+                    <p><strong>PySpark / AWS Glue:</strong></p>
+                    <ul>
+                        <li><strong>Schema normalisation</strong> – ensure consistent column names and data types across raw files</li>
+                        <li><strong>Type casting</strong> – convert ratings, vote counts and timestamps to numeric formats</li>
+                        <li><strong>Time features</strong> – derive calendar dates from Unix timestamps and extract review_year</li>
+                        <li><strong>Helpfulness metric</strong> – compute helpful_ratio = helpful_yes / total_votes with safeguards</li>
+                        <li><strong>Quality checks</strong> – filter clearly invalid rows, handle extreme outliers</li>
+                    </ul>
+                    <p>The cleaned outputs are written to <strong>Parquet</strong> for efficient storage and retrieval.</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
         with col2:
             st.markdown("""
-            **In-App Preprocessing (Python / pandas):**
-            
-            - ✅ Strip whitespace and standardise column names
-            - ✅ Re-parse dates where necessary (especially for uploaded files)
-            - ✅ Recalculate or fill `review_year` when only a timestamp is available
-            - ✅ Coerce key numeric columns into numeric types for safe aggregation and plotting
-            
-            This combination ensures the **same dashboard logic** works reliably for both the prepared Amazon 
-            sample and any uploaded dataset with compatible fields.
-            """)
+            <div class='content-card'>
+                <div class='content-card-header'>
+                    <div class='content-card-icon'>
+                        <i class='fas fa-laptop-code'></i>
+                    </div>
+                    <h3 class='content-card-title'>In-App Preprocessing</h3>
+                </div>
+                <div class='content-card-body'>
+                    <p><strong>Python / pandas:</strong></p>
+                    <ul>
+                        <li>Strip whitespace and standardise column names</li>
+                        <li>Re-parse dates where necessary (especially for uploaded files)</li>
+                        <li>Recalculate or fill review_year when only a timestamp is available</li>
+                        <li>Coerce key numeric columns into numeric types for safe aggregation and plotting</li>
+                    </ul>
+                    <p>This combination ensures the <strong>same dashboard logic</strong> works reliably for both the prepared Amazon 
+                    sample and any uploaded dataset with compatible fields.</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
-        st.markdown("### 3. Analytics and Visual Design")
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
+        # Analytics design card
         st.markdown("""
-        The dashboard organises analysis into several views, each tied back to the research questions:
-        
-        **📈 Trends:**
-        - Aggregates reviews by year, quarter, or month
-        - Plots review volume alongside average rating on a dual-axis chart
-        - Used to answer how ratings and engagement evolve over time
-        
-        **⭐ Ratings:**
-        - Calculates counts and percentages for each rating level
-        - Groups ratings into positive (4–5★), neutral (3★), and negative (1–2★) bands
-        - Shows how the distribution shifts as you adjust time, rating, and engagement filters
-        
-        **💡 Helpfulness:**
-        - Explores how helpfulness scores are distributed for different rating levels
-        - Uses both distribution plots (to see the spread) and scatter plots (to relate helpful votes to total votes)
-        - Highlights whether certain kinds of reviews attract more trust from other users
-        
-        **🏆 Leaders (Top Products & Reviewers):**
-        - Ranks products by number of reviews to reveal "hero" titles that drive conversation
-        - Ranks reviewers by activity to highlight power users and potential influencers
-        - Helps explain where most of the engagement is concentrated
-        
-        **Global filters** in the sidebar control the sample size, time window, rating subset, and engagement thresholds 
-        so that all visuals stay in sync when you explore a specific slice of the data.
-        """)
-        
-        st.markdown("### 4. Interpretation and Limitations")
-        
-        st.markdown("""
-        <div class='info-box'>
-        <p><strong>⚠️ Important Considerations:</strong></p>
-        
-        <ul>
-        <li>The dashboard is <strong>exploratory, not causal</strong>: it is designed to surface patterns and hypotheses rather 
-        than formal causal claims</li>
-        
-        <li><strong>Helpfulness</strong> is based on user votes and may be influenced by visibility, early reviews, or social 
-        dynamics on the platform</li>
-        
-        <li><strong>Uploaded datasets</strong> may differ in coverage, schema, or quality, so results should always be read in 
-        the context of the underlying data</li>
-        </ul>
-        
-        <p>Despite these limitations, the combination of <strong>scalable preprocessing and interactive visual analytics</strong> 
-        offers a powerful way to understand how customers engage with movie and TV content over time, which reviews they trust, 
-        and where businesses might focus their attention.</p>
+        <div class='content-card'>
+            <div class='content-card-header'>
+                <div class='content-card-icon'>
+                    <i class='fas fa-chart-line'></i>
+                </div>
+                <h3 class='content-card-title'>3. Analytics and Visual Design</h3>
+            </div>
+            <div class='content-card-body'>
+                <p>The dashboard organises analysis into several views, each tied back to the research questions:</p>
+                
+                <p><i class='fas fa-chart-area' style='color: #4a9eff; margin-right: 8px;'></i><strong>Trends:</strong> 
+                Aggregates reviews by year, quarter, or month. Plots review volume alongside average rating on a dual-axis chart. 
+                Used to answer how ratings and engagement evolve over time.</p>
+                
+                <p><i class='fas fa-star' style='color: #4a9eff; margin-right: 8px;'></i><strong>Ratings:</strong> 
+                Calculates counts and percentages for each rating level. Groups ratings into positive (4–5★), neutral (3★), and negative (1–2★) bands. 
+                Shows how the distribution shifts as you adjust filters.</p>
+                
+                <p><i class='fas fa-thumbs-up' style='color: #4a9eff; margin-right: 8px;'></i><strong>Helpfulness:</strong> 
+                Explores how helpfulness scores are distributed for different rating levels. Uses both distribution plots and scatter plots. 
+                Highlights whether certain kinds of reviews attract more trust.</p>
+                
+                <p><i class='fas fa-trophy' style='color: #4a9eff; margin-right: 8px;'></i><strong>Leaders:</strong> 
+                Ranks products by number of reviews to reveal "hero" titles. Ranks reviewers by activity to highlight power users and influencers. 
+                Helps explain where most engagement is concentrated.</p>
+                
+                <p><strong>Global filters</strong> in the sidebar control the sample size, time window, rating subset, and engagement thresholds 
+                so that all visuals stay in sync when you explore a specific slice of the data.</p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
+        
+        # Limitations card
+        st.markdown("""
+        <div class='content-card'>
+            <div class='content-card-header'>
+                <div class='content-card-icon'>
+                    <i class='fas fa-exclamation-triangle'></i>
+                </div>
+                <h3 class='content-card-title'>4. Interpretation and Limitations</h3>
+            </div>
+            <div class='content-card-body'>
+                <p><i class='fas fa-exclamation-circle' style='color: #4a9eff; margin-right: 8px;'></i><strong>Important Considerations:</strong></p>
+                
+                <ul>
+                    <li>The dashboard is <strong>exploratory, not causal</strong>: it is designed to surface patterns and hypotheses rather 
+                    than formal causal claims</li>
+                    
+                    <li><strong>Helpfulness</strong> is based on user votes and may be influenced by visibility, early reviews, or social 
+                    dynamics on the platform</li>
+                    
+                    <li><strong>Uploaded datasets</strong> may differ in coverage, schema, or quality, so results should always be read in 
+                    the context of the underlying data</li>
+                </ul>
+                
+                <p>Despite these limitations, the combination of <strong>scalable preprocessing and interactive visual analytics</strong> 
+                offers a powerful way to understand how customers engage with movie and TV content over time, which reviews they trust, 
+                and where businesses might focus their attention.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
         st.markdown("### <i class='fas fa-cogs'></i> Technology Stack", unsafe_allow_html=True)
         
@@ -1915,6 +1976,64 @@ def main():
             </div>
         </div>
         """, unsafe_allow_html=True)
+    
+    with tab1:
+        st.markdown("<h2 class='section-header'><i class='fas fa-chart-area'></i> TEMPORAL ANALYSIS</h2>", unsafe_allow_html=True)
+        
+        col_a, col_b = st.columns([3, 1])
+        with col_b:
+            time_granularity = st.selectbox(
+                "Time granularity",
+                options=["Year", "Quarter", "Month"],
+                index=0,
+                help="Choose how to aggregate the time series"
+            )
+        
+        plot_reviews_over_time_interactive(df, time_granularity=time_granularity)
+        
+        if advanced:
+            st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
+            st.markdown("<h2 class='section-header'><i class='fas fa-fire'></i> ENGAGEMENT PATTERNS</h2>", unsafe_allow_html=True)
+            plot_engagement_heatmap(df)
+
+    with tab2:
+        st.markdown("<h2 class='section-header'><i class='fas fa-star'></i> RATING DISTRIBUTION</h2>", unsafe_allow_html=True)
+        plot_rating_distribution_interactive(df)
+
+    with tab3:
+        st.markdown("<h2 class='section-header'><i class='fas fa-thumbs-up'></i> HELPFULNESS INSIGHTS</h2>", unsafe_allow_html=True)
+        plot_helpfulness_analysis_interactive(df)
+        st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
+        plot_scatter_helpful_votes_interactive(df)
+
+    with tab4:
+        if advanced:
+            st.markdown("<h2 class='section-header'><i class='fas fa-trophy'></i> TOP PERFORMERS</h2>", unsafe_allow_html=True)
+            plot_top_entities_interactive(df)
+            
+            st.markdown("""
+            <div class='content-card'>
+                <div class='content-card-header'>
+                    <div class='content-card-icon'>
+                        <i class='fas fa-lightbulb'></i>
+                    </div>
+                    <h3 class='content-card-title'>Why This Matters</h3>
+                </div>
+                <div class='content-card-body'>
+                    <p><i class='fas fa-trophy' style='color: #4a9eff; margin-right: 8px;'></i><strong>Top Products:</strong> 
+                    Identify your "hero" SKUs that drive conversation and engagement</p>
+                    
+                    <p><i class='fas fa-user-friends' style='color: #4a9eff; margin-right: 8px;'></i><strong>Power Reviewers:</strong> 
+                    Recognize influencers who could be leveraged for marketing or loyalty programs</p>
+                    
+                    <p><i class='fas fa-bullseye' style='color: #4a9eff; margin-right: 8px;'></i><strong>Content Strategy:</strong> 
+                    Focus resources on high-traffic products and cultivate relationships with active reviewers</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.info("💡 Enable 'Advanced analytics' in the sidebar to see top products and reviewers")
+
     # --------- DATA PREVIEW ---------
     st.markdown("<br><br>", unsafe_allow_html=True)
     with st.expander("🔍 Explore Raw Data", expanded=False):
