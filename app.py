@@ -24,7 +24,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS for professional dark corporate styling
+# Custom CSS for professional sleek styling
 st.markdown("""
 <style>
     /* Import professional font */
@@ -37,17 +37,17 @@ st.markdown("""
     
     /* Main background */
     .stApp {
-        background-color: #0a0a0a;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
     }
     
-    /* Gradient header - Corporate dark theme */
+    /* Professional header */
     .main-header {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-        border: 2px solid #ffa500;
+        background: linear-gradient(135deg, #1e2847 0%, #2a3554 50%, #1e2847 100%);
+        border: 2px solid #4a9eff;
         padding: 2rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(255, 165, 0, 0.15);
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 32px rgba(74, 158, 255, 0.2);
         position: relative;
         overflow: hidden;
     }
@@ -59,38 +59,60 @@ st.markdown("""
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #ffa500, #ff8c00, #ffa500);
+        background: linear-gradient(90deg, #4a9eff, #00d4ff, #4a9eff);
         animation: shimmer 3s infinite;
     }
     
     @keyframes shimmer {
         0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
+        50% { opacity: 0.6; }
     }
     
     .main-header h1 {
-        color: #ffa500;
+        color: #4a9eff;
         font-size: 2.5rem;
         font-weight: 800;
         margin: 0;
-        text-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
-        letter-spacing: -0.5px;
+        text-shadow: 0 0 20px rgba(74, 158, 255, 0.4);
+        letter-spacing: 1px;
     }
     
     .main-header p {
-        color: #d0d0d0;
+        color: #b8c5d6;
         font-size: 1rem;
         margin-top: 0.5rem;
-        font-weight: 400;
+        font-weight: 500;
     }
     
-    /* Metric cards - Orange/Yellow theme */
-    .metric-card {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-        border: 1px solid #ffa500;
+    /* Hero intro section */
+    .hero-intro {
+        background: linear-gradient(135deg, rgba(74, 158, 255, 0.08) 0%, rgba(0, 212, 255, 0.08) 100%);
+        border-left: 4px solid #4a9eff;
         padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .hero-intro p {
+        color: #d0d8e3;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+    
+    .hero-intro strong {
+        color: #4a9eff;
+        font-weight: 700;
+    }
+    
+    /* Metric cards - Modern blue theme */
+    .metric-card {
+        background: linear-gradient(135deg, #1e2847 0%, #2a3554 100%);
+        border: 1px solid #4a9eff;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -103,83 +125,85 @@ st.markdown("""
         left: 0;
         width: 100%;
         height: 3px;
-        background: linear-gradient(90deg, #ffa500, #ff8c00);
+        background: linear-gradient(90deg, #4a9eff, #00d4ff);
     }
     
     .metric-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 24px rgba(255, 165, 0, 0.3);
-        border-color: #ff8c00;
+        box-shadow: 0 8px 24px rgba(74, 158, 255, 0.4);
+        border-color: #00d4ff;
     }
     
     .metric-card h3 {
-        color: #888;
+        color: #7a8a9e;
         font-size: 0.85rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
     }
     
     .metric-card h1 {
-        color: #ffa500;
+        color: #4a9eff;
         font-weight: 800;
         font-size: 2.2rem;
         margin: 0.5rem 0;
+        text-shadow: 0 0 20px rgba(74, 158, 255, 0.3);
     }
     
     .metric-card p {
-        color: #999;
+        color: #8a9aae;
         font-size: 0.85rem;
     }
     
     /* Section headers */
     .section-header {
-        color: #ffa500 !important;
+        color: #4a9eff !important;
         font-size: 1.8rem !important;
         font-weight: 700 !important;
         margin: 2rem 0 1rem 0 !important;
         padding-left: 1rem !important;
-        border-left: 4px solid #ffa500 !important;
+        border-left: 4px solid #4a9eff !important;
         text-transform: uppercase !important;
-        letter-spacing: 1px !important;
+        letter-spacing: 1.5px !important;
     }
     
     /* Info boxes */
     .info-box {
-        background: rgba(255, 165, 0, 0.05);
-        border-left: 4px solid #ffa500;
-        padding: 1rem;
-        border-radius: 5px;
+        background: rgba(74, 158, 255, 0.08);
+        border-left: 4px solid #4a9eff;
+        padding: 1.2rem;
+        border-radius: 8px;
         margin: 1rem 0;
-        color: #d0d0d0;
+        color: #d0d8e3;
     }
     
     /* Button styling */
     .stButton>button {
-        background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%) !important;
-        color: #000 !important;
+        background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%) !important;
+        color: #0a0e27 !important;
         border: none !important;
         border-radius: 8px !important;
         padding: 0.6rem 2rem !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
+        letter-spacing: 1px !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3) !important;
+        box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3) !important;
     }
     
     .stButton>button:hover {
-        background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%) !important;
+        background: linear-gradient(135deg, #00d4ff 0%, #4a9eff 100%) !important;
         transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(255, 165, 0, 0.5) !important;
+        box-shadow: 0 6px 20px rgba(74, 158, 255, 0.5) !important;
     }
     
     /* Tabs styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 1rem;
-        background-color: #1a1a1a;
+        background-color: #1e2847;
         padding: 0.5rem;
-        border-radius: 10px;
+        border-radius: 12px;
+        border: 1px solid #2a3554;
     }
     
     .stTabs [data-baseweb="tab"] {
@@ -187,77 +211,77 @@ st.markdown("""
         border-radius: 8px !important;
         padding: 12px 24px !important;
         font-weight: 600 !important;
-        color: #888 !important;
+        color: #7a8a9e !important;
         border: 1px solid transparent !important;
         transition: all 0.3s ease !important;
     }
     
     .stTabs [data-baseweb="tab"]:hover {
-        background-color: rgba(255, 165, 0, 0.1) !important;
-        color: #ffa500 !important;
+        background-color: rgba(74, 158, 255, 0.1) !important;
+        color: #4a9eff !important;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%) !important;
-        color: #000 !important;
-        border-color: #ffa500 !important;
+        background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%) !important;
+        color: #0a0e27 !important;
+        border-color: #4a9eff !important;
         font-weight: 700 !important;
     }
     
     /* Expander styling */
     .streamlit-expanderHeader {
-        background: rgba(255, 165, 0, 0.1) !important;
-        border: 1px solid #ffa500 !important;
+        background: rgba(74, 158, 255, 0.1) !important;
+        border: 1px solid #4a9eff !important;
         border-radius: 8px !important;
         font-weight: 600 !important;
-        color: #ffa500 !important;
+        color: #4a9eff !important;
     }
     
     .streamlit-expanderHeader:hover {
-        background: rgba(255, 165, 0, 0.2) !important;
+        background: rgba(74, 158, 255, 0.2) !important;
     }
     
     /* Sidebar styling */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%) !important;
-        border-right: 2px solid #ffa500 !important;
+        background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%) !important;
+        border-right: 2px solid #4a9eff !important;
     }
     
     [data-testid="stSidebar"] .stMarkdown {
-        color: #d0d0d0 !important;
+        color: #d0d8e3 !important;
     }
     
     /* Metrics styling */
     [data-testid="stMetricValue"] {
-        color: #ffa500 !important;
+        color: #4a9eff !important;
         font-weight: 700 !important;
     }
     
     [data-testid="stMetricLabel"] {
-        color: #888 !important;
+        color: #7a8a9e !important;
         font-weight: 600 !important;
         text-transform: uppercase !important;
         font-size: 0.8rem !important;
-        letter-spacing: 1px !important;
+        letter-spacing: 1.5px !important;
     }
     
     /* Success/Info messages */
     .stSuccess {
-        background-color: rgba(255, 165, 0, 0.1) !important;
-        border-left: 4px solid #ffa500 !important;
-        color: #ffa500 !important;
+        background-color: rgba(74, 158, 255, 0.15) !important;
+        border-left: 4px solid #4a9eff !important;
+        color: #4a9eff !important;
     }
     
     .stInfo {
-        background-color: rgba(255, 165, 0, 0.05) !important;
-        border-left: 4px solid #ff8c00 !important;
-        color: #d0d0d0 !important;
+        background-color: rgba(74, 158, 255, 0.08) !important;
+        border-left: 4px solid #00d4ff !important;
+        color: #d0d8e3 !important;
     }
     
     /* Download button */
     .stDownloadButton>button {
-        background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%) !important;
-        color: #000 !important;
+        background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%) !important;
+        color: #0a0e27 !important;
         border: none !important;
         font-weight: 700 !important;
     }
@@ -268,10 +292,10 @@ st.markdown("""
 PROJECT_ROOT = Path(__file__).parent
 DATA_DIR = PROJECT_ROOT  # sample_reviews.parquet lives here
 
-# Modern color palettes - Professional Corporate Orange Theme
-COLORS_VIBRANT = ['#ffa500', '#ff8c00', '#ff7b00', '#ff6b00', '#ff5500', '#ff4500']
-COLORS_SUNSET = ['#ffb84d', '#ffa500', '#ff8c00', '#ff7b00', '#ff6b00', '#ff5500']
-COLORS_OCEAN = ['#f39c12', '#e67e22', '#d35400', '#e74c3c', '#c0392b', '#a93226']
+# Modern color palettes - Professional Cool Blue Scheme
+COLORS_VIBRANT = ['#4a9eff', '#00d4ff', '#3b7dd6', '#5c7cfa', '#74bdff', '#a1d3ff']
+COLORS_SUNSET = ['#4a9eff', '#00d4ff', '#00a8e8', '#0077b6', '#03045e', '#023e8a']
+COLORS_OCEAN = ['#0077b6', '#0096c7', '#00b4d8', '#48cae4', '#90e0ef', '#ade8f4']
 
 # ---------------- DATA LOADING -----------------
 
@@ -347,8 +371,8 @@ def preprocess_reviews(df: pd.DataFrame) -> pd.DataFrame:
 
 def sidebar_filters(df_full: pd.DataFrame):
     st.sidebar.markdown("""
-    <div style='text-align: center; padding: 1rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 2px solid #ffa500; border-radius: 10px; margin-bottom: 2rem;'>
-        <h2 style='color: #ffa500; margin: 0; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;'>⚙️ CONTROLS</h2>
+    <div style='text-align: center; padding: 1rem; background: linear-gradient(135deg, #1e2847 0%, #2a3554 100%); border: 2px solid #4a9eff; border-radius: 12px; margin-bottom: 2rem;'>
+        <h2 style='color: #4a9eff; margin: 0; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;'>⚙️ CONTROLS</h2>
     </div>
     """, unsafe_allow_html=True)
 
@@ -554,11 +578,11 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
             marker=dict(
                 color=grouped["review_count"],
                 colorscale=[
-                    [0, '#ff8c00'],
-                    [0.5, '#ffa500'],
-                    [1, '#ffb84d']
+                    [0, '#3b7dd6'],
+                    [0.5, '#4a9eff'],
+                    [1, '#00d4ff']
                 ],
-                line=dict(color='rgba(255,165,0,0.3)', width=1),
+                line=dict(color='rgba(74,158,255,0.3)', width=1),
                 showscale=False
             ),
             text=[f"{val:,}" for val in grouped["review_count"]],
@@ -594,7 +618,7 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
     fig.update_layout(
         title=dict(
             text=f"📈 Review Volume & Ratings Trend ({time_granularity})",
-            font=dict(size=22, color='#ffa500', family='Arial Black'),
+            font=dict(size=22, color='#4a9eff', family='Arial Black'),
             x=0.05,
             y=0.98
         ),
@@ -1197,13 +1221,24 @@ def plot_engagement_heatmap(df: pd.DataFrame):
 
 
 def main():
-    # Animated header
+    # Professional header
     st.markdown("""
     <div class='main-header'>
         <h1>🎬 AMAZON MOVIE REVIEW ANALYTICS</h1>
         <p>Big Data Analytics Dashboard | ALY6110 - Cloud & Big Data Management | Final Project</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Hero intro section
+    st.markdown("""
+    <div class='hero-intro'>
+        <p>This dashboard turns a massive collection of <strong>Amazon Movies & TV reviews</strong> into an interactive analytics experience. 
+        Use the controls on the left to slice the data by time, rating, and engagement, then move across the tabs to explore how 
+        customers feel about different titles, which reviews are considered helpful, and which products or reviewers dominate the conversation.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # --------- DATA SOURCE ---------
     st.sidebar.markdown("### 📁 Data Source")
@@ -1276,8 +1311,121 @@ def main():
 
     # --------- MAIN VISUALIZATIONS ---------
     
-    # Tab-based navigation for better organization
-    tab1, tab2, tab3, tab4 = st.tabs(["📈 Trends", "⭐ Ratings", "💡 Helpfulness", "🏆 Leaders"])
+    # Tab-based navigation with Overview and Methodology
+    tab_overview, tab1, tab2, tab3, tab4, tab_method = st.tabs([
+        "📋 Overview", "📈 Trends", "⭐ Ratings", "💡 Helpfulness", "🏆 Leaders", "🧪 Methodology"
+    ])
+
+    with tab_overview:
+        st.markdown("<h2 class='section-header'>Project Overview</h2>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class='info-box'>
+        <p>This project explores <strong>large-scale Amazon movie and TV review data</strong> to understand how customers rate content, 
+        how those ratings evolve over time, and which reviews actually influence other users. Instead of scrolling through thousands 
+        of raw reviews, the dashboard provides an interactive view that highlights trends, patterns, and outliers in a way that is 
+        easy to interpret.</p>
+        
+        <p>From an analytics perspective, the goal is to move from raw text and star ratings to <strong>structured insight</strong> 
+        that can inform product, marketing, and content decisions. The dashboard is designed to support quick exploratory analysis 
+        as well as deeper dives into specific products, time periods, and engagement segments.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("### What you can do with this dashboard")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+            - 📊 **Track** how review volume and average ratings change across years, quarters, or months
+            - ⚖️ **Understand** the balance between very positive, neutral, and negative reviews
+            - 🔍 **Analyse** how "helpful" different reviews are, by rating and over time
+            """)
+        
+        with col2:
+            st.markdown("""
+            - 🎯 **Identify** products and reviewers that attract disproportionate attention and engagement
+            - 💼 **Support** data-driven decisions for product, marketing, and content teams
+            - 🚀 **Explore** patterns in a massive dataset through an intuitive interface
+            """)
+        
+        st.markdown("""
+        <div class='info-box'>
+        <p>Whether you are a <strong>data analyst, product manager, or researcher</strong>, the dashboard acts as a front-end to an 
+        underlying big-data pipeline that processes millions of historical reviews into a clean, analysis-ready format.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        st.markdown("<h2 class='section-header'>Dataset Context</h2>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        The core dataset is a **historical collection of Amazon Movies & TV reviews**, originally compiled as part of a large 
+        public review corpus. Each row typically corresponds to a single user's review of a single product and contains:
+        
+        - **Product ID** – a unique identifier for each movie or TV title
+        - **User ID** – an anonymised identifier for the reviewer  
+        - **Rating** – star rating, generally on a 1–5 scale
+        - **Timestamp** – the date the review was submitted (stored as Unix time and converted to calendar dates)
+        - **Helpfulness votes** – number of "helpful" votes and total votes from other users
+        - **Derived fields** – review year, and a `helpful_ratio` measuring the share of votes that marked the review as helpful
+        
+        In this dashboard, you can either explore a prepared sample dataset based on this corpus, or upload your own file with a 
+        similar structure. The same cleaning and transformation steps are applied so that all visuals and filters work seamlessly 
+        across both.
+        """)
+        
+        st.markdown("### Key Stats")
+        
+        stats_col1, stats_col2 = st.columns(2)
+        
+        with stats_col1:
+            st.markdown("""
+            - **Scale:** Millions of individual movie and TV reviews collected over multiple years
+            - **Coverage:** Reviews spanning more than a decade of customer behaviour
+            - **Breadth:** Hundreds of thousands of unique products and a large, long-tail population of reviewers
+            """)
+        
+        with stats_col2:
+            st.markdown("""
+            - **Ratings:** Average rating typically sits above 4★, with a long tail of neutral and negative reviews
+            - **Engagement:** Many reviews receive at least some community feedback in the form of helpfulness votes
+            - **Quality:** Dataset provides foundation for studying both customer sentiment and review dynamics at scale
+            """)
+        
+        st.markdown("---")
+        
+        st.markdown("<h2 class='section-header'>Research Questions</h2>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        These are the core research questions driving the dashboard:
+        
+        **1. How have review volume and average ratings changed over time?**
+        - Are there clear peaks in activity that might align with platform growth or major releases?
+        - Do customers become more generous or more critical in later years?
+        
+        **2. What does the overall rating distribution look like, and how does it change under different filters?**
+        - What proportion of reviews are strongly positive (4–5★), neutral (3★), or negative (1–2★)?
+        - Does this balance shift when we restrict the data to specific time windows, engagement levels, or products?
+        
+        **3. How does perceived helpfulness vary across ratings and over time?**
+        - Are mid-range reviews (e.g., 3★) seen as more objective and therefore more helpful?
+        - Does the community's standard for what counts as "helpful" change over the years?
+        
+        **4. Which products and reviewers dominate attention and engagement?**
+        - Which titles have unusually high review volume, and what does their rating profile look like?
+        - Who are the most active reviewers, and how might their behaviour shape overall sentiment?
+        
+        **5. Where should platform or business teams focus their efforts?**
+        - Which segments show the biggest gaps between volume and quality?
+        - Are there products where ratings are high but helpfulness is low (or vice versa), suggesting a need for moderation, 
+          promotion, or better content curation?
+        
+        These questions are reflected in the structure of the dashboard: time-based trends, rating distributions, helpfulness 
+        analysis, and "leaderboards" of products and reviewers.
+        """)
 
     with tab1:
         st.markdown("<h2 class='section-header'>Temporal Analysis</h2>", unsafe_allow_html=True)
@@ -1323,6 +1471,143 @@ def main():
                 """)
         else:
             st.info("💡 Enable 'Advanced analytics' in the sidebar to see top products and reviewers")
+    
+    with tab_method:
+        st.markdown("<h2 class='section-header'>Methodology</h2>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class='info-box'>
+        <p>To keep the analysis <strong>transparent and reproducible</strong>, this tab summarises how the data was prepared 
+        and how the dashboard produces its metrics.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("### 1. Data Source and Scope")
+        
+        st.markdown("""
+        - The default dataset is a **large-scale collection of Amazon Movies & TV reviews**, where each row represents a single review event
+        - The underlying corpus includes star ratings, timestamps, product and user IDs, and community feedback on helpfulness
+        - The dashboard also supports **user-uploaded datasets** in CSV or Parquet format, as long as they contain broadly similar 
+          columns (e.g., product, user, rating, time, helpful votes, total votes)
+        """)
+        
+        st.markdown("### 2. Pre-processing and Feature Engineering")
+        
+        st.markdown("""
+        Before the data reaches the dashboard, it goes through a **cleaning and transformation pipeline** using big-data tools 
+        (PySpark / AWS Glue) and then a final light preprocessing step in Python.
+        """)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+            **Upstream Pipeline (PySpark / AWS Glue):**
+            
+            - ✅ **Schema normalisation** – ensure consistent column names and data types across raw files
+            - ✅ **Type casting** – convert ratings, vote counts and timestamps to numeric formats
+            - ✅ **Time features** – derive calendar dates from Unix timestamps and extract `review_year`
+            - ✅ **Helpfulness metric** – compute `helpful_ratio = helpful_yes / total_votes` with safeguards
+            - ✅ **Quality checks** – filter clearly invalid rows, handle extreme outliers
+            
+            The cleaned outputs are written to **Parquet** for efficient storage and retrieval.
+            """)
+        
+        with col2:
+            st.markdown("""
+            **In-App Preprocessing (Python / pandas):**
+            
+            - ✅ Strip whitespace and standardise column names
+            - ✅ Re-parse dates where necessary (especially for uploaded files)
+            - ✅ Recalculate or fill `review_year` when only a timestamp is available
+            - ✅ Coerce key numeric columns into numeric types for safe aggregation and plotting
+            
+            This combination ensures the **same dashboard logic** works reliably for both the prepared Amazon 
+            sample and any uploaded dataset with compatible fields.
+            """)
+        
+        st.markdown("### 3. Analytics and Visual Design")
+        
+        st.markdown("""
+        The dashboard organises analysis into several views, each tied back to the research questions:
+        
+        **📈 Trends:**
+        - Aggregates reviews by year, quarter, or month
+        - Plots review volume alongside average rating on a dual-axis chart
+        - Used to answer how ratings and engagement evolve over time
+        
+        **⭐ Ratings:**
+        - Calculates counts and percentages for each rating level
+        - Groups ratings into positive (4–5★), neutral (3★), and negative (1–2★) bands
+        - Shows how the distribution shifts as you adjust time, rating, and engagement filters
+        
+        **💡 Helpfulness:**
+        - Explores how helpfulness scores are distributed for different rating levels
+        - Uses both distribution plots (to see the spread) and scatter plots (to relate helpful votes to total votes)
+        - Highlights whether certain kinds of reviews attract more trust from other users
+        
+        **🏆 Leaders (Top Products & Reviewers):**
+        - Ranks products by number of reviews to reveal "hero" titles that drive conversation
+        - Ranks reviewers by activity to highlight power users and potential influencers
+        - Helps explain where most of the engagement is concentrated
+        
+        **Global filters** in the sidebar control the sample size, time window, rating subset, and engagement thresholds 
+        so that all visuals stay in sync when you explore a specific slice of the data.
+        """)
+        
+        st.markdown("### 4. Interpretation and Limitations")
+        
+        st.markdown("""
+        <div class='info-box'>
+        <p><strong>⚠️ Important Considerations:</strong></p>
+        
+        <ul>
+        <li>The dashboard is <strong>exploratory, not causal</strong>: it is designed to surface patterns and hypotheses rather 
+        than formal causal claims</li>
+        
+        <li><strong>Helpfulness</strong> is based on user votes and may be influenced by visibility, early reviews, or social 
+        dynamics on the platform</li>
+        
+        <li><strong>Uploaded datasets</strong> may differ in coverage, schema, or quality, so results should always be read in 
+        the context of the underlying data</li>
+        </ul>
+        
+        <p>Despite these limitations, the combination of <strong>scalable preprocessing and interactive visual analytics</strong> 
+        offers a powerful way to understand how customers engage with movie and TV content over time, which reviews they trust, 
+        and where businesses might focus their attention.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("### Technology Stack")
+        
+        tech_col1, tech_col2, tech_col3 = st.columns(3)
+        
+        with tech_col1:
+            st.markdown("""
+            **📊 Data Processing:**
+            - AWS S3 (Storage)
+            - AWS Glue (ETL)
+            - PySpark (Processing)
+            - Parquet (Format)
+            """)
+        
+        with tech_col2:
+            st.markdown("""
+            **🎨 Visualization:**
+            - Streamlit (Framework)
+            - Plotly (Interactive Charts)
+            - Pandas (Data Manipulation)
+            - NumPy (Numerical Computing)
+            """)
+        
+        with tech_col3:
+            st.markdown("""
+            **☁️ Deployment:**
+            - Streamlit Cloud
+            - GitHub (Version Control)
+            - Python 3.13
+            - Continuous Integration
+            """)
 
     # --------- DATA PREVIEW ---------
     st.markdown("<br><br>", unsafe_allow_html=True)
