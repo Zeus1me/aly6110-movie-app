@@ -949,8 +949,6 @@ def plot_engagement_heatmap(df: pd.DataFrame):
     # Filter valid data
     df_valid = df.dropna(subset=["review_year", "rating", "helpful_ratio"]).copy()
     
-    st.info(f"Debug: Found {len(df_valid)} valid rows for heatmap")
-    
     if len(df_valid) < 5:
         st.info(f"💡 Not enough data for engagement heatmap. Found {len(df_valid)} rows, need at least 5 reviews with year, rating, and helpfulness data.")
         return
@@ -967,8 +965,6 @@ def plot_engagement_heatmap(df: pd.DataFrame):
     unique_years = df_valid["review_year"].nunique()
     unique_ratings = df_valid["rating"].nunique()
     
-    st.info(f"Debug: {unique_years} unique years, {unique_ratings} unique ratings")
-    
     if unique_years < 1 or unique_ratings < 1:
         st.info(f"💡 Need at least 1 year and 1 rating. Found {unique_years} years and {unique_ratings} ratings.")
         return
@@ -981,8 +977,6 @@ def plot_engagement_heatmap(df: pd.DataFrame):
             columns="review_year",
             aggfunc="mean"
         )
-        
-        st.info(f"Debug: Pivot shape is {pivot.shape}")
         
         # Sort by rating (descending) and year (ascending)
         pivot = pivot.sort_index(ascending=False)
@@ -1013,15 +1007,16 @@ def plot_engagement_heatmap(df: pd.DataFrame):
             hoverongaps=False,
             hovertemplate='<b>Year: %{x}</b><br>Rating: %{y}<br>Avg Helpfulness: %{z:.3f}<extra></extra>',
             colorbar=dict(
-                title="Avg Helpful Ratio",
-                titleside="right",
+                title=dict(
+                    text="Avg Helpful Ratio",
+                    font=dict(size=12, color='white')
+                ),
                 tickmode="linear",
                 tick0=0,
                 dtick=0.1,
                 len=0.6,
                 thickness=15,
-                tickfont=dict(size=11, color='white'),
-                titlefont=dict(size=12, color='white')
+                tickfont=dict(size=11, color='white')
             ),
             zmin=0,
             zmax=1
@@ -1055,11 +1050,19 @@ def plot_engagement_heatmap(df: pd.DataFrame):
 
         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
         
+        # Remove debug messages after successful render
+        st.success(f"✅ Heatmap displayed: {unique_years} year(s) × {unique_ratings} rating(s)")
+        
         # Add interpretation guide
         with st.expander("💡 Reading the Heatmap"):
             avg_helpfulness = float(pivot.values.mean())
             min_helpfulness = float(pivot.values.min())
             max_helpfulness = float(pivot.values.max())
+            
+            if unique_years == 1:
+                year_msg = f"**Note:** This heatmap shows data from only one year ({df_valid['review_year'].iloc[0]}). Upload data with multiple years to see temporal trends."
+            else:
+                year_msg = f"This heatmap covers {unique_years} years of review data."
             
             st.markdown(f"""
             **How to interpret:**
@@ -1068,10 +1071,12 @@ def plot_engagement_heatmap(df: pd.DataFrame):
             - **Blue cells:** Lower helpfulness ratio (down to {min_helpfulness:.3f}) - reviews were less valued
             - **Average:** {avg_helpfulness:.3f} across all year-rating combinations
             
+            {year_msg}
+            
             **Use Cases:**
             
             - Identify which rating levels consistently produce helpful content
-            - Spot temporal trends in review quality
+            - Spot temporal trends in review quality (when multiple years available)
             - Target improvement efforts on low-helpfulness segments
             """)
             
