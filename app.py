@@ -932,33 +932,45 @@ def plot_top_entities_interactive(df: pd.DataFrame):
 
 def plot_engagement_heatmap(df: pd.DataFrame):
     """Heatmap of engagement patterns - properly rendered."""
+    
     # Check if required columns exist
-    if "review_year" not in df.columns or "rating" not in df.columns or "helpful_ratio" not in df.columns:
-        st.info("💡 Engagement data not available (missing required columns)")
+    if "review_year" not in df.columns:
+        st.warning("⚠️ No 'review_year' column found in data")
+        return
+    
+    if "rating" not in df.columns:
+        st.warning("⚠️ No 'rating' column found in data")
+        return
+        
+    if "helpful_ratio" not in df.columns:
+        st.warning("⚠️ No 'helpful_ratio' column found in data")
         return
 
     # Filter valid data
     df_valid = df.dropna(subset=["review_year", "rating", "helpful_ratio"]).copy()
     
-    # Convert to proper types
-    df_valid["review_year"] = df_valid["review_year"].astype(int)
-    df_valid["rating"] = df_valid["rating"].astype(int)
+    st.info(f"Debug: Found {len(df_valid)} valid rows for heatmap")
     
-    # Check if we have enough data
-    if len(df_valid) < 10:
-        st.info("💡 Not enough data for engagement heatmap (need at least 10 reviews)")
+    if len(df_valid) < 5:
+        st.info(f"💡 Not enough data for engagement heatmap. Found {len(df_valid)} rows, need at least 5 reviews with year, rating, and helpfulness data.")
         return
-
-    # Check for variety in years and ratings
+    
+    # Convert to proper types
+    try:
+        df_valid["review_year"] = df_valid["review_year"].astype(int)
+        df_valid["rating"] = df_valid["rating"].astype(int)
+    except Exception as e:
+        st.error(f"Error converting data types: {str(e)}")
+        return
+    
+    # Check for variety
     unique_years = df_valid["review_year"].nunique()
     unique_ratings = df_valid["rating"].nunique()
     
-    if unique_years < 2:
-        st.info(f"💡 Only one year of data available ({df_valid['review_year'].iloc[0]}). Need multiple years for heatmap.")
-        return
+    st.info(f"Debug: {unique_years} unique years, {unique_ratings} unique ratings")
     
-    if unique_ratings < 2:
-        st.info(f"💡 Only one rating level available. Need multiple ratings for heatmap.")
+    if unique_years < 1 or unique_ratings < 1:
+        st.info(f"💡 Need at least 1 year and 1 rating. Found {unique_years} years and {unique_ratings} ratings.")
         return
 
     # Create pivot table
@@ -970,119 +982,104 @@ def plot_engagement_heatmap(df: pd.DataFrame):
             aggfunc="mean"
         )
         
+        st.info(f"Debug: Pivot shape is {pivot.shape}")
+        
         # Sort by rating (descending) and year (ascending)
         pivot = pivot.sort_index(ascending=False)
         pivot = pivot[sorted(pivot.columns)]
         
     except Exception as e:
-        st.error(f"Error creating heatmap: {str(e)}")
+        st.error(f"Error creating pivot table: {str(e)}")
         return
 
-    if pivot.empty or pivot.shape[0] < 2 or pivot.shape[1] < 2:
-        st.info("💡 Insufficient data variety for heatmap visualization")
+    if pivot.empty:
+        st.info("💡 Pivot table is empty - no data to display")
         return
 
     # Create the heatmap
-    fig = go.Figure(data=go.Heatmap(
-        z=pivot.values,
-        x=[str(int(col)) for col in pivot.columns],
-        y=[f"{int(r)}★" for r in pivot.index],
-        colorscale=[
-            [0.0, '#0d47a1'],    # Deep blue (low helpfulness)
-            [0.2, '#1565c0'],    # Dark blue
-            [0.4, '#1976d2'],    # Medium blue
-            [0.6, '#42a5f5'],    # Light blue
-            [0.8, '#66bb6a'],    # Light green
-            [1.0, '#81c784']     # Green (high helpfulness)
-        ],
-        hoverongaps=False,
-        hovertemplate='<b>Year: %{x}</b><br>Rating: %{y}<br>Avg Helpfulness: %{z:.3f}<extra></extra>',
-        colorbar=dict(
-            title=dict(
-                text="Avg Helpful Ratio",
-                side="right"
+    try:
+        fig = go.Figure(data=go.Heatmap(
+            z=pivot.values,
+            x=[str(int(col)) for col in pivot.columns],
+            y=[f"{int(r)}★" for r in pivot.index],
+            colorscale=[
+                [0.0, '#0d47a1'],
+                [0.2, '#1565c0'],
+                [0.4, '#1976d2'],
+                [0.6, '#42a5f5'],
+                [0.8, '#66bb6a'],
+                [1.0, '#81c784']
+            ],
+            hoverongaps=False,
+            hovertemplate='<b>Year: %{x}</b><br>Rating: %{y}<br>Avg Helpfulness: %{z:.3f}<extra></extra>',
+            colorbar=dict(
+                title="Avg Helpful Ratio",
+                titleside="right",
+                tickmode="linear",
+                tick0=0,
+                dtick=0.1,
+                len=0.6,
+                thickness=15,
+                tickfont=dict(size=11, color='white'),
+                titlefont=dict(size=12, color='white')
             ),
-            titleside="right",
-            tickmode="linear",
-            tick0=0,
-            dtick=0.1,
-            len=0.6,
-            thickness=15,
-            tickfont=dict(size=11, color='white'),
-            titlefont=dict(size=12, color='white')
-        ),
-        zmin=0,
-        zmax=1,
-        zmid=0.5
-    ))
+            zmin=0,
+            zmax=1
+        ))
 
-    fig.update_layout(
-        title=dict(
-            text="🔥 Engagement Heatmap: Helpfulness by Year & Rating",
-            font=dict(size=20, color='#2a5298', family='Arial Black'),
-            x=0.05,
-            y=0.98
-        ),
-        xaxis=dict(
-            title="Year",
-            title_font=dict(size=14, color='white'),
-            tickmode='linear',
-            tick0=int(min(pivot.columns)),
-            dtick=max(1, (max(pivot.columns) - min(pivot.columns)) // 15),
-            tickfont=dict(size=11, color='white'),
-            showgrid=False,
-            side='bottom'
-        ),
-        yaxis=dict(
-            title="Rating",
-            title_font=dict(size=14, color='white'),
-            tickfont=dict(size=12, color='white'),
-            showgrid=False
-        ),
-        plot_bgcolor='rgba(15, 23, 42, 0.3)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        height=450,
-        margin=dict(l=80, r=120, t=100, b=80)
-    )
+        fig.update_layout(
+            title=dict(
+                text="🔥 Engagement Heatmap: Helpfulness by Year & Rating",
+                font=dict(size=20, color='#2a5298', family='Arial Black'),
+                x=0.05,
+                y=0.98
+            ),
+            xaxis=dict(
+                title="Year",
+                title_font=dict(size=14, color='white'),
+                tickfont=dict(size=11, color='white'),
+                showgrid=False,
+                side='bottom'
+            ),
+            yaxis=dict(
+                title="Rating",
+                title_font=dict(size=14, color='white'),
+                tickfont=dict(size=12, color='white'),
+                showgrid=False
+            ),
+            plot_bgcolor='rgba(15, 23, 42, 0.3)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            height=450,
+            margin=dict(l=80, r=120, t=100, b=80)
+        )
 
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
-    
-    # Add interpretation guide
-    with st.expander("💡 Reading the Heatmap"):
-        avg_helpfulness = pivot.values.mean()
-        min_helpfulness = pivot.values.min()
-        max_helpfulness = pivot.values.max()
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
         
-        # Find best and worst combinations
-        best_idx = np.unravel_index(pivot.values.argmax(), pivot.values.shape)
-        worst_idx = np.unravel_index(pivot.values.argmin(), pivot.values.shape)
-        
-        best_rating = int(pivot.index[best_idx[0]])
-        best_year = int(pivot.columns[best_idx[1]])
-        best_value = pivot.values[best_idx]
-        
-        worst_rating = int(pivot.index[worst_idx[0]])
-        worst_year = int(pivot.columns[worst_idx[1]])
-        worst_value = pivot.values[worst_idx]
-        
-        st.markdown(f"""
-        **How to interpret:**
-        
-        - **Green cells:** High helpfulness ratio ({max_helpfulness:.3f}) - users found these reviews very useful
-        - **Blue cells:** Lower helpfulness ratio ({min_helpfulness:.3f}) - reviews were less valued
-        - **Average:** {avg_helpfulness:.3f} across all year-rating combinations
-        
-        **Key Findings:**
-        
-        - 🏆 **Most Helpful:** {best_rating}★ reviews in {best_year} (helpfulness: {best_value:.3f})
-        - 📉 **Least Helpful:** {worst_rating}★ reviews in {worst_year} (helpfulness: {worst_value:.3f})
-        
-        **Use Cases:**
-        
-        - Identify which rating levels consistently produce helpful content
-        - Spot temporal trends in review quality
-        - Target improvement efforts on low-helpfulness segments
-        """)
+        # Add interpretation guide
+        with st.expander("💡 Reading the Heatmap"):
+            avg_helpfulness = float(pivot.values.mean())
+            min_helpfulness = float(pivot.values.min())
+            max_helpfulness = float(pivot.values.max())
+            
+            st.markdown(f"""
+            **How to interpret:**
+            
+            - **Green cells:** High helpfulness ratio (up to {max_helpfulness:.3f}) - users found these reviews very useful
+            - **Blue cells:** Lower helpfulness ratio (down to {min_helpfulness:.3f}) - reviews were less valued
+            - **Average:** {avg_helpfulness:.3f} across all year-rating combinations
+            
+            **Use Cases:**
+            
+            - Identify which rating levels consistently produce helpful content
+            - Spot temporal trends in review quality
+            - Target improvement efforts on low-helpfulness segments
+            """)
+            
+    except Exception as e:
+        st.error(f"Error creating heatmap visualization: {str(e)}")
+        import traceback
+        st.code(traceback.format_exc())
+        return
 
 
 # ---------------- MAIN APP -----------------
