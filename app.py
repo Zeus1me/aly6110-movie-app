@@ -917,86 +917,160 @@ def plot_top_entities_interactive(df: pd.DataFrame):
 
 
 def plot_engagement_heatmap(df: pd.DataFrame):
-    """Heatmap of engagement patterns."""
-    if "review_year" not in df.columns or "rating" not in df.columns:
+    """Heatmap of engagement patterns - properly rendered."""
+    # Check if required columns exist
+    if "review_year" not in df.columns or "rating" not in df.columns or "helpful_ratio" not in df.columns:
+        st.info("💡 Engagement data not available (missing required columns)")
         return
 
-    df_valid = df.dropna(subset=["review_year", "rating", "helpful_ratio"])
-    if df_valid.empty or len(df_valid) < 10:
+    # Filter valid data
+    df_valid = df.dropna(subset=["review_year", "rating", "helpful_ratio"]).copy()
+    
+    # Convert to proper types
+    df_valid["review_year"] = df_valid["review_year"].astype(int)
+    df_valid["rating"] = df_valid["rating"].astype(int)
+    
+    # Check if we have enough data
+    if len(df_valid) < 10:
+        st.info("💡 Not enough data for engagement heatmap (need at least 10 reviews)")
+        return
+
+    # Check for variety in years and ratings
+    unique_years = df_valid["review_year"].nunique()
+    unique_ratings = df_valid["rating"].nunique()
+    
+    if unique_years < 2:
+        st.info(f"💡 Only one year of data available ({df_valid['review_year'].iloc[0]}). Need multiple years for heatmap.")
+        return
+    
+    if unique_ratings < 2:
+        st.info(f"💡 Only one rating level available. Need multiple ratings for heatmap.")
         return
 
     # Create pivot table
-    pivot = df_valid.pivot_table(
-        values="helpful_ratio",
-        index="rating",
-        columns="review_year",
-        aggfunc="mean"
-    )
-
-    if pivot.empty or pivot.shape[0] < 2 or pivot.shape[1] < 2:
+    try:
+        pivot = df_valid.pivot_table(
+            values="helpful_ratio",
+            index="rating",
+            columns="review_year",
+            aggfunc="mean"
+        )
+        
+        # Sort by rating (descending) and year (ascending)
+        pivot = pivot.sort_index(ascending=False)
+        pivot = pivot[sorted(pivot.columns)]
+        
+    except Exception as e:
+        st.error(f"Error creating heatmap: {str(e)}")
         return
 
-    # Sort properly
-    pivot = pivot.sort_index(ascending=False)
-    pivot = pivot.loc[:, sorted(pivot.columns)]
+    if pivot.empty or pivot.shape[0] < 2 or pivot.shape[1] < 2:
+        st.info("💡 Insufficient data variety for heatmap visualization")
+        return
 
+    # Create the heatmap
     fig = go.Figure(data=go.Heatmap(
         z=pivot.values,
         x=[str(int(col)) for col in pivot.columns],
         y=[f"{int(r)}★" for r in pivot.index],
         colorscale=[
-            [0, '#0d47a1'],      # Deep blue (low)
-            [0.25, '#1976d2'],   # Medium blue
-            [0.5, '#42a5f5'],    # Light blue
-            [0.75, '#81c784'],   # Light green
-            [1, '#66bb6a']       # Green (high)
+            [0.0, '#0d47a1'],    # Deep blue (low helpfulness)
+            [0.2, '#1565c0'],    # Dark blue
+            [0.4, '#1976d2'],    # Medium blue
+            [0.6, '#42a5f5'],    # Light blue
+            [0.8, '#66bb6a'],    # Light green
+            [1.0, '#81c784']     # Green (high helpfulness)
         ],
         hoverongaps=False,
         hovertemplate='<b>Year: %{x}</b><br>Rating: %{y}<br>Avg Helpfulness: %{z:.3f}<extra></extra>',
         colorbar=dict(
-            title="Avg<br>Helpful<br>Ratio",
+            title=dict(
+                text="Avg<br>Helpful<br>Ratio",
+                side="right"
+            ),
             titleside="right",
             tickmode="linear",
             tick0=0,
             dtick=0.1,
-            len=0.7
+            len=0.6,
+            thickness=15,
+            tickfont=dict(size=11, color='white'),
+            titlefont=dict(size=12, color='white')
         ),
         zmin=0,
-        zmax=1
+        zmax=1,
+        zmid=0.5,
+        text=[[f"{val:.2f}" for val in row] for row in pivot.values],
+        texttemplate="%{text}",
+        textfont={"size": 10, "color": "white"}
     ))
 
     fig.update_layout(
         title=dict(
             text="🔥 Engagement Heatmap: Helpfulness by Year & Rating",
             font=dict(size=20, color='#2a5298', family='Arial Black'),
-            x=0.05
+            x=0.05,
+            y=0.98
         ),
-        xaxis_title="Year",
-        yaxis_title="Rating",
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        height=450,
         xaxis=dict(
+            title="Year",
+            title_font=dict(size=14, color='white'),
             tickmode='linear',
-            tick0=min(pivot.columns),
-            dtick=1,
-            tickfont=dict(size=11)
+            tick0=int(min(pivot.columns)),
+            dtick=max(1, (max(pivot.columns) - min(pivot.columns)) // 15),
+            tickfont=dict(size=11, color='white'),
+            showgrid=False,
+            side='bottom'
         ),
         yaxis=dict(
-            tickfont=dict(size=12)
-        )
+            title="Rating",
+            title_font=dict(size=14, color='white'),
+            tickfont=dict(size=12, color='white'),
+            showgrid=False
+        ),
+        plot_bgcolor='rgba(15, 23, 42, 0.3)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        height=450,
+        margin=dict(l=80, r=120, t=100, b=80)
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
     
+    # Add interpretation guide
     with st.expander("💡 Reading the Heatmap"):
-        st.markdown("""
+        avg_helpfulness = pivot.values.mean()
+        min_helpfulness = pivot.values.min()
+        max_helpfulness = pivot.values.max()
+        
+        # Find best and worst combinations
+        best_idx = np.unravel_index(pivot.values.argmax(), pivot.values.shape)
+        worst_idx = np.unravel_index(pivot.values.argmin(), pivot.values.shape)
+        
+        best_rating = int(pivot.index[best_idx[0]])
+        best_year = int(pivot.columns[best_idx[1]])
+        best_value = pivot.values[best_idx]
+        
+        worst_rating = int(pivot.index[worst_idx[0]])
+        worst_year = int(pivot.columns[worst_idx[1]])
+        worst_value = pivot.values[worst_idx]
+        
+        st.markdown(f"""
         **How to interpret:**
         
-        - **Green areas:** High helpfulness - users found these reviews very useful
-        - **Blue areas:** Lower helpfulness - reviews were less valued by the community
-        - **Patterns:** Look for consistency across years or rating-specific trends
-        - **Use case:** Identify which rating levels produce the most helpful content
+        - **Green cells:** High helpfulness ratio ({max_helpfulness:.3f}) - users found these reviews very useful
+        - **Blue cells:** Lower helpfulness ratio ({min_helpfulness:.3f}) - reviews were less valued
+        - **Average:** {avg_helpfulness:.3f} across all year-rating combinations
+        
+        **Key Findings:**
+        
+        - 🏆 **Most Helpful:** {best_rating}★ reviews in {best_year} (helpfulness: {best_value:.3f})
+        - 📉 **Least Helpful:** {worst_rating}★ reviews in {worst_year} (helpfulness: {worst_value:.3f})
+        
+        **Use Cases:**
+        
+        - Identify which rating levels consistently produce helpful content
+        - Spot temporal trends in review quality
+        - Target improvement efforts on low-helpfulness segments
         """)
 
 
@@ -1099,6 +1173,11 @@ def main():
             )
         
         plot_reviews_over_time_interactive(df, time_granularity=time_granularity)
+        
+        if advanced:
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.markdown("<h2 class='section-header'>Engagement Patterns</h2>", unsafe_allow_html=True)
+            plot_engagement_heatmap(df)
 
     with tab2:
         st.markdown("<h2 class='section-header'>Rating Distribution</h2>", unsafe_allow_html=True)
@@ -1109,11 +1188,6 @@ def main():
         plot_helpfulness_analysis_interactive(df)
         st.markdown("<br>", unsafe_allow_html=True)
         plot_scatter_helpful_votes_interactive(df)
-        
-        if advanced:
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.markdown("<h2 class='section-header'>Engagement Patterns</h2>", unsafe_allow_html=True)
-            plot_engagement_heatmap(df)
 
     with tab4:
         if advanced:
