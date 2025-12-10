@@ -264,39 +264,89 @@ st.markdown("""
     
     /* Tech stack cards */
     .tech-card {
-        background: linear-gradient(135deg, rgba(74, 158, 255, 0.08) 0%, rgba(0, 212, 255, 0.08) 100%);
-        border: 1px solid rgba(74, 158, 255, 0.3);
-        border-radius: 10px;
-        padding: 1.5rem;
+        background: linear-gradient(135deg, #1e2847 0%, #2a3554 100%);
+        border: 2px solid #4a9eff;
+        border-radius: 12px;
+        padding: 2rem 1.5rem;
         text-align: center;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .tech-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #4a9eff, #00d4ff, #4a9eff);
+    }
+    
+    .tech-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #4a9eff, transparent);
+        opacity: 0.5;
     }
     
     .tech-card:hover {
-        border-color: #4a9eff;
-        background: linear-gradient(135deg, rgba(74, 158, 255, 0.12) 0%, rgba(0, 212, 255, 0.12) 100%);
-        transform: translateY(-3px);
+        border-color: #00d4ff;
+        background: linear-gradient(135deg, #2a3554 0%, #1e2847 100%);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 32px rgba(74, 158, 255, 0.3);
     }
     
     .tech-icon {
-        font-size: 2.5rem;
+        font-size: 3rem;
         color: #4a9eff;
         margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .tech-card:hover .tech-icon {
+        transform: scale(1.1);
+        color: #00d4ff;
     }
     
     .tech-title {
         color: #4a9eff;
         font-size: 1.1rem;
         font-weight: 700;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(74, 158, 255, 0.3);
     }
     
     .tech-list {
         color: #d0d8e3;
-        font-size: 0.9rem;
-        line-height: 2;
+        font-size: 0.95rem;
+        line-height: 2.2;
+        font-weight: 500;
+    }
+    
+    .tech-item {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(74, 158, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .tech-item:last-child {
+        border-bottom: none;
+    }
+    
+    .tech-item:hover {
+        color: #4a9eff;
+        padding-left: 0.5rem;
     }
     
     /* Metric cards - Modern blue theme */
@@ -1614,24 +1664,6 @@ def main():
         
         st.markdown("<div class='visual-divider'></div>", unsafe_allow_html=True)
         
-        # Target audience card
-        st.markdown("""
-        <div class='content-card'>
-            <div class='content-card-header'>
-                <div class='content-card-icon'>
-                    <i class='fas fa-users'></i>
-                </div>
-                <h3 class='content-card-title'>Who This Is For</h3>
-            </div>
-            <div class='content-card-body'>
-                <p>Whether you are a <strong>data analyst, product manager, or researcher</strong>, the dashboard acts as a front-end to an 
-                underlying big-data pipeline that processes millions of historical reviews into a clean, analysis-ready format.</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
-        
         st.markdown("<h2 class='section-header'><i class='fas fa-database'></i> DATASET CONTEXT</h2>", unsafe_allow_html=True)
         
         # Dataset description card
@@ -1941,15 +1973,15 @@ def main():
         st.markdown("### <i class='fas fa-cogs'></i> Technology Stack", unsafe_allow_html=True)
         
         st.markdown("""
-        <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;'>
+        <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0;'>
             <div class='tech-card'>
                 <div class='tech-icon'><i class='fas fa-server'></i></div>
                 <div class='tech-title'>Data Processing</div>
                 <div class='tech-list'>
-                    AWS S3 (Storage)<br>
-                    AWS Glue (ETL)<br>
-                    PySpark (Processing)<br>
-                    Parquet (Format)
+                    <div class='tech-item'>AWS S3<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Storage)</span></div>
+                    <div class='tech-item'>AWS Glue<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(ETL Pipeline)</span></div>
+                    <div class='tech-item'>PySpark<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Distributed Processing)</span></div>
+                    <div class='tech-item'>Parquet<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Columnar Format)</span></div>
                 </div>
             </div>
             
@@ -1957,10 +1989,10 @@ def main():
                 <div class='tech-icon'><i class='fas fa-chart-area'></i></div>
                 <div class='tech-title'>Visualization</div>
                 <div class='tech-list'>
-                    Streamlit (Framework)<br>
-                    Plotly (Interactive Charts)<br>
-                    Pandas (Data Manipulation)<br>
-                    NumPy (Numerical Computing)
+                    <div class='tech-item'>Streamlit<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Web Framework)</span></div>
+                    <div class='tech-item'>Plotly<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Interactive Charts)</span></div>
+                    <div class='tech-item'>Pandas<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Data Manipulation)</span></div>
+                    <div class='tech-item'>NumPy<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Numerical Computing)</span></div>
                 </div>
             </div>
             
@@ -1968,10 +2000,10 @@ def main():
                 <div class='tech-icon'><i class='fas fa-cloud'></i></div>
                 <div class='tech-title'>Deployment</div>
                 <div class='tech-list'>
-                    Streamlit Cloud<br>
-                    GitHub (Version Control)<br>
-                    Python 3.13<br>
-                    Continuous Integration
+                    <div class='tech-item'>Streamlit Cloud<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Hosting Platform)</span></div>
+                    <div class='tech-item'>GitHub<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Version Control)</span></div>
+                    <div class='tech-item'>Python 3.13<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Runtime Environment)</span></div>
+                    <div class='tech-item'>CI/CD<br><span style='font-size: 0.8rem; color: #7a8a9e;'>(Continuous Integration)</span></div>
                 </div>
             </div>
         </div>
