@@ -372,134 +372,183 @@ def sidebar_filters(df_full: pd.DataFrame):
 
 
 def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str = "Year"):
-    """Interactive time series with dual-axis."""
+    """Interactive time series with dual-axis - properly rendered."""
     if "review_date" not in df.columns or df["review_date"].dropna().empty:
         st.info("📅 No date information available for time-based view.")
         return
 
     df_time = df.dropna(subset=["review_date"]).copy()
 
+    # Create proper time buckets
     if time_granularity == "Year":
-        df_time["time_bucket"] = df_time["review_date"].dt.year.astype(int)
-        df_time["time_bucket_str"] = df_time["time_bucket"].astype(str)
+        df_time["time_bucket"] = df_time["review_date"].dt.year
+        df_time = df_time.sort_values("time_bucket")
+        grouped = (
+            df_time.groupby("time_bucket")
+            .agg(
+                review_count=("rating", "count"),
+                avg_rating=("rating", "mean"),
+            )
+            .reset_index()
+        )
+        grouped["time_display"] = grouped["time_bucket"].astype(int).astype(str)
+        
     elif time_granularity == "Quarter":
         df_time["time_bucket"] = df_time["review_date"].dt.to_period("Q")
-        df_time["time_bucket_str"] = df_time["time_bucket"].astype(str)
+        grouped = (
+            df_time.groupby("time_bucket")
+            .agg(
+                review_count=("rating", "count"),
+                avg_rating=("rating", "mean"),
+            )
+            .reset_index()
+        )
+        grouped = grouped.sort_values("time_bucket")
+        grouped["time_display"] = grouped["time_bucket"].astype(str)
+        
     else:  # Month
         df_time["time_bucket"] = df_time["review_date"].dt.to_period("M")
-        df_time["time_bucket_str"] = df_time["time_bucket"].astype(str)
-
-    grouped = (
-        df_time.groupby("time_bucket_str")
-        .agg(
-            review_count=("rating", "count"),
-            avg_rating=("rating", "mean"),
+        grouped = (
+            df_time.groupby("time_bucket")
+            .agg(
+                review_count=("rating", "count"),
+                avg_rating=("rating", "mean"),
+            )
+            .reset_index()
         )
-        .reset_index()
-    )
-    
-    # Sort properly
-    if time_granularity == "Year":
-        grouped = grouped.sort_values("time_bucket_str")
-    else:
-        grouped = grouped.sort_values("time_bucket_str")
+        grouped = grouped.sort_values("time_bucket")
+        grouped["time_display"] = grouped["time_bucket"].astype(str)
 
     if grouped.empty:
         st.info("No data available for the selected time range.")
         return
 
-    # Create dual-axis plot with proper sizing
+    # Create figure with secondary y-axis
     fig = make_subplots(
         specs=[[{"secondary_y": True}]],
-        subplot_titles=("")
+        row_heights=[1.0]
     )
 
-    # Add bar chart for review count
+    # Add bar trace for review count
     fig.add_trace(
         go.Bar(
-            x=grouped["time_bucket_str"],
+            x=grouped["time_display"],
             y=grouped["review_count"],
             name="Review Count",
             marker=dict(
                 color=grouped["review_count"],
-                colorscale=[[0, '#1e3c72'], [0.5, '#2a5298'], [1, '#4a9eff']],
-                line=dict(color='rgba(255,255,255,0.3)', width=1)
+                colorscale=[
+                    [0, '#1e3c72'],
+                    [0.5, '#2a5298'],
+                    [1, '#4a9eff']
+                ],
+                line=dict(color='rgba(255,255,255,0.2)', width=1),
+                showscale=False
             ),
+            text=grouped["review_count"],
+            textposition='outside',
+            textfont=dict(size=10, color='white'),
             hovertemplate='<b>%{x}</b><br>Reviews: %{y:,}<extra></extra>',
-            opacity=0.85
+            opacity=0.9
         ),
-        secondary_y=False,
+        secondary_y=False
     )
 
-    # Add line chart for average rating
+    # Add line trace for average rating
     fig.add_trace(
         go.Scatter(
-            x=grouped["time_bucket_str"],
+            x=grouped["time_display"],
             y=grouped["avg_rating"],
             name="Avg Rating",
             mode='lines+markers',
-            line=dict(color='#00bcd4', width=4, shape='spline'),
-            marker=dict(size=10, symbol='circle', color='#00bcd4', 
-                       line=dict(color='white', width=2)),
+            line=dict(color='#00bcd4', width=4, shape='spline', smoothing=0.3),
+            marker=dict(
+                size=10,
+                color='#00bcd4',
+                symbol='circle',
+                line=dict(color='white', width=2)
+            ),
             hovertemplate='<b>%{x}</b><br>Rating: %{y:.2f}★<extra></extra>'
         ),
-        secondary_y=True,
+        secondary_y=True
     )
 
-    # Update layout with better spacing
+    # Update layout
     fig.update_layout(
         title=dict(
             text=f"📈 Review Volume & Ratings Trend ({time_granularity})",
             font=dict(size=22, color='#2a5298', family='Arial Black'),
-            x=0.05
+            x=0.05,
+            y=0.98
         ),
         hovermode='x unified',
-        plot_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(15, 23, 42, 0.3)',
         paper_bgcolor='rgba(0,0,0,0)',
         height=550,
         showlegend=True,
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=1.02,
+            y=1.05,
             xanchor="right",
             x=1,
-            bgcolor='rgba(0,0,0,0.5)',
+            bgcolor='rgba(30, 60, 114, 0.6)',
+            bordercolor='rgba(255,255,255,0.2)',
+            borderwidth=1,
             font=dict(color='white', size=12)
         ),
-        margin=dict(l=60, r=60, t=100, b=80)
+        margin=dict(l=80, r=80, t=120, b=80)
     )
 
+    # X-axis
     fig.update_xaxes(
-        title_text=time_granularity, 
-        showgrid=True, 
-        gridcolor='rgba(128,128,128,0.2)',
-        tickangle=-45 if len(grouped) > 12 else 0,
-        tickfont=dict(size=11)
+        title_text=time_granularity,
+        title_font=dict(size=14, color='white'),
+        showgrid=True,
+        gridcolor='rgba(128,128,128,0.15)',
+        tickangle=-45 if len(grouped) > 15 else 0,
+        tickfont=dict(size=11, color='white'),
+        showline=True,
+        linewidth=1,
+        linecolor='rgba(255,255,255,0.2)'
     )
+
+    # Primary y-axis (Review Count)
     fig.update_yaxes(
-        title_text="Number of Reviews", 
-        secondary_y=False, 
-        showgrid=True, 
-        gridcolor='rgba(128,128,128,0.2)',
-        title_font=dict(color='#2a5298', size=13)
+        title_text="Number of Reviews",
+        title_font=dict(color='#4a9eff', size=14),
+        secondary_y=False,
+        showgrid=True,
+        gridcolor='rgba(128,128,128,0.15)',
+        tickfont=dict(color='#4a9eff', size=11),
+        showline=True,
+        linewidth=1,
+        linecolor='rgba(255,255,255,0.2)'
     )
+
+    # Secondary y-axis (Average Rating)
     fig.update_yaxes(
-        title_text="Average Rating (1-5★)", 
-        secondary_y=True, 
+        title_text="Average Rating (1-5★)",
+        title_font=dict(color='#00bcd4', size=14),
+        secondary_y=True,
         showgrid=False,
         range=[0, 5.5],
-        title_font=dict(color='#00bcd4', size=13)
+        tickfont=dict(color='#00bcd4', size=11),
+        showline=True,
+        linewidth=1,
+        linecolor='rgba(255,255,255,0.2)'
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
 
-    # Insights
+    # Key insights
     with st.expander("💡 What This Chart Tells You", expanded=False):
-        total_reviews = grouped["review_count"].sum()
-        peak_period = grouped.loc[grouped["review_count"].idxmax(), "time_bucket_str"]
-        peak_count = grouped["review_count"].max()
-        avg_rating_overall = grouped["avg_rating"].mean()
+        total_reviews = int(grouped["review_count"].sum())
+        peak_period = grouped.loc[grouped["review_count"].idxmax(), "time_display"]
+        peak_count = int(grouped["review_count"].max())
+        avg_rating_overall = float(grouped["avg_rating"].mean())
+        min_rating = float(grouped["avg_rating"].min())
+        max_rating = float(grouped["avg_rating"].max())
         
         st.markdown(f"""
         **Key Insights:**
@@ -507,7 +556,8 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
         - 📊 **Total Reviews:** {total_reviews:,} reviews in the selected period
         - 🚀 **Peak Activity:** {peak_period} with {peak_count:,} reviews
         - ⭐ **Average Rating:** {avg_rating_overall:.2f} stars across all periods
-        - 📈 **Trend:** Look for spikes (marketing campaigns, releases) and rating shifts (sentiment changes)
+        - 📉 **Rating Range:** {min_rating:.2f} to {max_rating:.2f} stars
+        - 📈 **Trend Analysis:** Look for spikes (marketing campaigns, releases) and rating shifts (sentiment changes)
         """)
 
 
@@ -1049,10 +1099,6 @@ def main():
             )
         
         plot_reviews_over_time_interactive(df, time_granularity=time_granularity)
-        
-        if advanced:
-            st.markdown("<br>", unsafe_allow_html=True)
-            plot_engagement_heatmap(df)
 
     with tab2:
         st.markdown("<h2 class='section-header'>Rating Distribution</h2>", unsafe_allow_html=True)
@@ -1063,6 +1109,11 @@ def main():
         plot_helpfulness_analysis_interactive(df)
         st.markdown("<br>", unsafe_allow_html=True)
         plot_scatter_helpful_votes_interactive(df)
+        
+        if advanced:
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.markdown("<h2 class='section-header'>Engagement Patterns</h2>", unsafe_allow_html=True)
+            plot_engagement_heatmap(df)
 
     with tab4:
         if advanced:
