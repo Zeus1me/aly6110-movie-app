@@ -382,7 +382,6 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
     # Create proper time buckets
     if time_granularity == "Year":
         df_time["time_bucket"] = df_time["review_date"].dt.year
-        df_time = df_time.sort_values("time_bucket")
         grouped = (
             df_time.groupby("time_bucket")
             .agg(
@@ -390,6 +389,7 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
                 avg_rating=("rating", "mean"),
             )
             .reset_index()
+            .sort_values("time_bucket")
         )
         grouped["time_display"] = grouped["time_bucket"].astype(int).astype(str)
         
@@ -423,6 +423,17 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
         st.info("No data available for the selected time range.")
         return
 
+    # Calculate appropriate bar width based on number of bars
+    num_bars = len(grouped)
+    if num_bars == 1:
+        bar_width = 0.4
+    elif num_bars <= 5:
+        bar_width = 0.6
+    elif num_bars <= 10:
+        bar_width = 0.7
+    else:
+        bar_width = 0.8
+
     # Create figure with secondary y-axis
     fig = make_subplots(
         specs=[[{"secondary_y": True}]],
@@ -445,11 +456,12 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
                 line=dict(color='rgba(255,255,255,0.2)', width=1),
                 showscale=False
             ),
-            text=grouped["review_count"],
+            text=[f"{val:,}" for val in grouped["review_count"]],
             textposition='outside',
             textfont=dict(size=10, color='white'),
             hovertemplate='<b>%{x}</b><br>Reviews: %{y:,}<extra></extra>',
-            opacity=0.9
+            opacity=0.9,
+            width=bar_width
         ),
         secondary_y=False
     )
@@ -461,7 +473,7 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
             y=grouped["avg_rating"],
             name="Avg Rating",
             mode='lines+markers',
-            line=dict(color='#00bcd4', width=4, shape='spline', smoothing=0.3),
+            line=dict(color='#00bcd4', width=4),
             marker=dict(
                 size=10,
                 color='#00bcd4',
@@ -497,7 +509,8 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
             borderwidth=1,
             font=dict(color='white', size=12)
         ),
-        margin=dict(l=80, r=80, t=120, b=80)
+        margin=dict(l=80, r=80, t=120, b=100),
+        bargap=0.15
     )
 
     # X-axis
@@ -506,11 +519,12 @@ def plot_reviews_over_time_interactive(df: pd.DataFrame, time_granularity: str =
         title_font=dict(size=14, color='white'),
         showgrid=True,
         gridcolor='rgba(128,128,128,0.15)',
-        tickangle=-45 if len(grouped) > 15 else 0,
+        tickangle=-45 if num_bars > 10 else 0,
         tickfont=dict(size=11, color='white'),
         showline=True,
         linewidth=1,
-        linecolor='rgba(255,255,255,0.2)'
+        linecolor='rgba(255,255,255,0.2)',
+        type='category'  # Force categorical to ensure all values show
     )
 
     # Primary y-axis (Review Count)
@@ -985,7 +999,7 @@ def plot_engagement_heatmap(df: pd.DataFrame):
         hovertemplate='<b>Year: %{x}</b><br>Rating: %{y}<br>Avg Helpfulness: %{z:.3f}<extra></extra>',
         colorbar=dict(
             title=dict(
-                text="Avg<br>Helpful<br>Ratio",
+                text="Avg Helpful Ratio",
                 side="right"
             ),
             titleside="right",
@@ -999,10 +1013,7 @@ def plot_engagement_heatmap(df: pd.DataFrame):
         ),
         zmin=0,
         zmax=1,
-        zmid=0.5,
-        text=[[f"{val:.2f}" for val in row] for row in pivot.values],
-        texttemplate="%{text}",
-        textfont={"size": 10, "color": "white"}
+        zmid=0.5
     ))
 
     fig.update_layout(
