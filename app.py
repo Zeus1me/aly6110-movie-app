@@ -10,10 +10,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 
-# ---------------- CONFIG -----------------
+PROJECT_ROOT = Path(__file__).parent
 
-PROJECT_ROOT = Path("/Users/eyinadeiyanuoluwa/Desktop/ALY6110 final project")
-DATA_DIR = PROJECT_ROOT / "data_processed" / "reviews_parquet_stage6_clean"
+# sample parquet file (sample_reviews.parquet) 
+DATA_DIR = PROJECT_ROOT
 
 sns.set_theme(style="whitegrid")
 plt.rcParams.update({
